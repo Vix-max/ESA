@@ -1,0 +1,125 @@
+/* Sidebar */
+.admin-sidebar {
+  text-align: left;
+  width: 250px;
+  background-color: #191727;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  height: 100vh; /* Full height sidebar */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  transition: width 0.3s ease;
+}
+
+.admin-sidebar.minimized {
+  width: 80px; /* Minimized width */
+}
+
+.adminDash-logo {
+  width: 200px;
+  font-family: Nunito;
+  font-weight: bold;
+  color: azure;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+
+.adminDash-logo i {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding-left: 0px;
+  margin: 0;
+  flex-grow: 1; /* Ensures full height navigation list */
+}
+
+.admin-sidebar li {
+  width: 90%;
+  font-family: Nunito;
+  font-weight: 600;
+  margin: 15px 0;
+  cursor: pointer;
+  color: azure;
+  display: flex;
+  align-items: center; /* Align items vertically */
+  padding: 10px;
+  border-radius: 5px; /* Rounded corners for the background */
+}
+
+.admin-sidebar li:hover {
+  color: white;
+  background-color: #456EFE; /* Light background color on hover */
+}
+
+.admin-sidebar li.active {
+  font-weight: 700;
+  color: #3759d3; /* Text color for the active item */
+}
+
+.admin-sidebar i {
+  margin-right: 10px; /* Space between icon and text */
+  color: #797979; /* Default icon color */
+}
+
+.admin-sidebar li:hover i {
+  color: white; /* Change icon color on hover */
+}
+
+.admin-sidebar li.active i {
+  color: #3759d3; /* Change icon color on active state */
+}
+
+/* For minimized sidebar (hide text) */
+.admin-sidebar.minimized ul li span {
+  display: none; /* Hide text when sidebar is minimized */
+}
+
+.admin-sidebar.minimized ul li i {
+  margin-right: 0; /* Remove space between icon and text */
+}
+
+/* Top Bar */
+.admin-topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: calc(100% - 250px); /* Adjust for sidebar width */
+}
+
+.admin-profile {
+  height: 50px;
+  margin-top: 10px;
+}
+
+.admin-profile :hover {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.admin-fullname {
+  margin-right: 10px;
+}
+
+.admin-avatar :hover {
+  width: 55px;
+  height: 55px;
+}
+.admin-content {
+    margin-left: 290px; /* Match sidebar width */
+    padding: 80px 20px; /* Padding to avoid overlap with top bar */
+    width: calc(100% - 290px); /* Adjust content width */
+  }
+  
