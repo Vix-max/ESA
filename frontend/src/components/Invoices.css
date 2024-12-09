@@ -1,0 +1,203 @@
+.invoices-content {
+    font-family: Arial, sans-serif;
+    background-color: #eeeef0;
+    padding: 20px;
+    
+  }
+  
+  .header {
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    
+  }
+
+  .header h1{
+    font-family: Nunito;
+    font-weight: 800;
+  }
+  
+  .actions button {
+    font-family: Nunito;
+    font-weight: 600;
+    margin-left: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: 0.1s;
+  }
+  
+  .export-button {
+    background-color: white;
+    color: rgb(32, 32, 32);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); /* Light shadow */
+    transition: 0.1s;
+  }
+
+  .export-button:hover {
+    background-color: rgb(241, 241, 241);
+  }
+
+  .export-button i{
+    padding-right:5px;
+  }
+  
+
+
+  .add-button {
+    background-color: #456EFE;
+    color: white;
+  }
+  .add-button:hover {
+    background-color: #3d60de;
+  }
+
+  .add-button i{
+    padding-right:5px;
+  }
+  
+  
+ .invoice-table-content{
+    font-family: Nunito;
+    padding: 20px;
+    background-color: white;
+    border-radius: 20px;
+ }
+
+ .filters {
+    
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px; /* Add spacing between filter elements */
+  }
+  
+  .date-filter {
+    display: flex;
+    font-family: Nunito;
+  }
+  
+  .date-filter label {
+    margin: auto;
+    margin-right:10px;
+    font-family: Nunito;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .date-filter input {
+    font-family: Nunito;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 200px;
+  }
+  
+  .search-button {
+    
+    font-family: Nunito;
+    padding: 10px 15px;
+    background-color: #456EFE;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+    font-weight: 600;
+  }
+  
+  .search-button:hover {
+    background-color: #3d60de;
+  }
+  
+  .entry-selector {
+    margin-left: auto; /* Pushes the selector to the right */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+  
+  .entry-selector label {
+    font-weight: bold;
+  }
+  
+  .entry-selector select {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .entry-selector span {
+    font-size: 14px;
+  }
+  
+  
+  .purchase-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+  }
+  
+  .purchase-table th, .purchase-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1.5px solid #e4e4e4; /* Only the bottom border is visible */
+  }
+  
+  .dropdown {
+    position: relative;
+  }
+  
+  .action-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 10px;
+    right: 0;
+    z-index: 1;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .pagination span {
+    margin: 0 5px;
+    font-size: 16px;
+  }
+  

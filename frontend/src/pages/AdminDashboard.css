@@ -1,4 +1,8 @@
 /* Sidebar */
+*
+.admin-dashboard{
+  background-color: #eeeef0;
+}
 .admin-sidebar {
   text-align: left;
   width: 250px;
@@ -92,7 +96,6 @@
   align-items: center;
   background-color: #fff;
   padding: 10px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   right: 0;
@@ -120,6 +123,6 @@
 .admin-content {
     margin-left: 290px; /* Match sidebar width */
     padding: 80px 20px; /* Padding to avoid overlap with top bar */
-    width: calc(100% - 290px); /* Adjust content width */
+    
   }
   

@@ -1,49 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import './AdminDashboard.css';
-import logo from '../media/Logo_NOBG.png';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom'; 
-
 import Dashboard from '../components/Dashboard'; 
 import Invoices from '../components/Invoices';
 import Stock from '../components/Stock'; 
 import Analytics from '../components/Analytics'; 
 import Customers from '../components/Customers'; 
 import Users from '../components/Users'; 
-
+import Cookies from 'js-cookie'; // Import js-cookie
+import axios from 'axios';
 
 const AdminDashboard = () => {
-  const [selectedMenu, setSelectedMenu] = useState('dashboard'); // Default to 'dashboard'
-  const [adminName, setAdminName] = useState('dashboard'); // Default to 'dashboard'
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [selectedMenu, setSelectedMenu] = useState('dashboard');
+  const [adminName, setAdminName] = useState('');
+  const navigate = useNavigate();
 
   // Check authentication on component mount
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedAdminName = localStorage.getItem('adminName');
+    const token = Cookies.get('auth_token'); // Get token from cookie
+    console.log("Auth-dash-", token);
+    const storedAdminName = Cookies.get('adminName'); // Get admin name from cookie
+    console.log("Auth-name-", adminName);
     setAdminName(storedAdminName);
+
     if (!token) {
       toast.error('You need to be logged in to access this page.');
+      console.log("You need to be logged in to access this page.");
       navigate('/admin-login'); // Redirect to login page if not authenticated
     }
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userType');
-    localStorage.removeItem('adminName'); 
-    console.log('Logout clicked');
-    toast.success('Logged out successfully!', {
-      autoClose: 2500,
-      onClose: () => {
-        navigate('/admin-login'); // Redirect to login page
-      }
-    });
+  const handleLogout = async () => {
+    try {
+      const token = Cookies.get('auth_token'); // Get token from cookies
+      await axios.post('http://localhost:8000/api/admin/logout', {}, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`, // Add token to Authorization header
+        }
+      });
+      // Remove cookies after logout
+      Cookies.remove('auth_token');
+      Cookies.remove('adminName');
+      toast.success('Logged out successfully!', {
+        autoClose: 2500,
+        onClose: () => navigate('/admin-login'),
+      });
+    } catch (error) {
+      toast.error('Logout failed. Please try again.');
+    }
   };
+  
+  
 
   const handleProfileClick = () => {
-    setSelectedMenu('profile'); // Set the selected menu to 'profile'
+    setSelectedMenu('profile');
   };
 
   return (
@@ -51,7 +63,6 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <div className="admin-sidebar">
         <div className='adminDash-logo'>
-            
           <h1>ESA Enterprises</h1>
         </div>
         <ul>
@@ -95,8 +106,8 @@ const AdminDashboard = () => {
             <i className="icon fas fa-sign-out-alt"></i> Logout
           </li>
         </ul>
-      </div>
 
+      </div>
 
       {/* Top Bar */}
       <div className="admin-topbar">
@@ -105,30 +116,16 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      
       {/* Main Content */}
       <div className="admin-content">
-        {selectedMenu === 'dashboard' && (
-          <Dashboard />
-        )}
-        {selectedMenu === 'invoices' && (
-          <Invoices /> // Render Inventory Component
-        )}
-        {selectedMenu === 'stock' && (
-          <Stock />
-        )}
-        {selectedMenu === 'analytics' && (
-          <Analytics />
-        )}
-        {selectedMenu === 'customers' && (
-          <Customers />
-        )}
-        {selectedMenu === 'users' && (
-          <Users/>
-        )}
-        
+        {selectedMenu === 'dashboard' && <Dashboard />}
+        {selectedMenu === 'invoices' && <Invoices />}
+        {selectedMenu === 'stock' && <Stock />}
+        {selectedMenu === 'analytics' && <Analytics />}
+        {selectedMenu === 'customers' && <Customers />}
+        {selectedMenu === 'users' && <Users />}
       </div>
-      <ToastContainer /> {/* Add ToastContainer for toast notifications */}
+      <ToastContainer />
     </div>
   );
 }
