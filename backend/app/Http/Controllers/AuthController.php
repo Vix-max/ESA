@@ -44,7 +44,7 @@ class AuthController extends Controller
     {
     $token = $request->cookie('auth_token');
     if ($token) {
-        auth()->logout(); // Invalidate the token using Sanctum
+        Auth::guard('web')->logout();
         return response()->json(['message' => 'Logout successful'])
         ->withoutCookie('auth_token');
     }

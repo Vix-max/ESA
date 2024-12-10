@@ -21,7 +21,7 @@ const AdminLogin = () => {
       }, { withCredentials: true });
       const userRole = response.data.role;
       if (userRole === 'Admin') {
-        navigate('/admin-dashoboard');
+        navigate('/admin-dashboard/dashboard');
       } else if (userRole === 'staff') {
         navigate('/staffdashboard');
       }

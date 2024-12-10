@@ -1,61 +1,53 @@
+
 import React, { useState, useEffect } from 'react';
 import './AdminDashboard.css';
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate, NavLink, Route, Routes } from 'react-router-dom'; // Import necessary components
 import Dashboard from '../components/Dashboard'; 
 import Invoices from '../components/Invoices';
 import Stock from '../components/Stock'; 
+import Items from '../components/Items'; 
 import Analytics from '../components/Analytics'; 
 import Customers from '../components/Customers'; 
 import Users from '../components/Users'; 
-import Cookies from 'js-cookie'; // Import js-cookie
+import Cookies from 'js-cookie'; 
 import axios from 'axios';
 
 const AdminDashboard = () => {
-  const [selectedMenu, setSelectedMenu] = useState('dashboard');
   const [adminName, setAdminName] = useState('');
   const navigate = useNavigate();
 
   // Check authentication on component mount
   useEffect(() => {
-    const token = Cookies.get('auth_token'); // Get token from cookie
-    console.log("Auth-dash-", token);
-    const storedAdminName = Cookies.get('adminName'); // Get admin name from cookie
-    console.log("Auth-name-", adminName);
+    const token = Cookies.get('auth_token');
+    const storedAdminName = Cookies.get('adminName');
     setAdminName(storedAdminName);
 
     if (!token) {
       toast.error('You need to be logged in to access this page.');
-      console.log("You need to be logged in to access this page.");
       navigate('/admin-login'); // Redirect to login page if not authenticated
     }
   }, [navigate]);
 
   const handleLogout = async () => {
     try {
-      const token = Cookies.get('auth_token'); // Get token from cookies
+      const token = Cookies.get('auth_token');
       await axios.post('http://localhost:8000/api/admin/logout', {}, {
         withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`, // Add token to Authorization header
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      // Remove cookies after logout
       Cookies.remove('auth_token');
       Cookies.remove('adminName');
       toast.success('Logged out successfully!', {
         autoClose: 2500,
-        onClose: () => navigate('/admin-login'),
       });
     } catch (error) {
       toast.error('Logout failed. Please try again.');
     }
   };
-  
-  
 
   const handleProfileClick = () => {
-    setSelectedMenu('profile');
+    // Logic for profile click (if needed)
   };
 
   return (
@@ -66,64 +58,91 @@ const AdminDashboard = () => {
           <h1>ESA Enterprises</h1>
         </div>
         <ul>
-          <li 
-            onClick={() => setSelectedMenu('dashboard')} 
-            className={selectedMenu === 'dashboard' ? 'active' : ''}
-          >
-            <i className="fas fa-tachometer-alt"></i> Dashboard
-          </li>
-          <li 
-            onClick={() => setSelectedMenu('invoices')} 
-            className={selectedMenu === 'invoices' ? 'active' : ''}
-          >
-            <i className="icon fas fa-file-invoice"></i> Invoices / Quotations
-          </li>
-          <li 
-            onClick={() => setSelectedMenu('stock')} 
-            className={selectedMenu === 'stock' ? 'active' : ''}
-          >
-            <i className="icon fas fa-warehouse"></i> Stock
-          </li>
-          <li 
-            onClick={() => setSelectedMenu('analytics')} 
-            className={selectedMenu === 'analytics' ? 'active' : ''}
-          >
-            <i className="fas fa-chart-line"></i> Analytics
-          </li>
-          <li 
-            onClick={() => setSelectedMenu('customers')} 
-            className={selectedMenu === 'customers' ? 'active' : ''}
-          >
-            <i className="icon fas fa-users"></i> Customers
-          </li>
-          <li 
-            onClick={() => setSelectedMenu('users')} 
-            className={selectedMenu === 'users' ? 'active' : ''}
-          >
-            <i className="icon fas fa-user-friends"></i> Users
-          </li>
-          <li onClick={handleLogout} className="logout-item">
-            <i className="icon fas fa-sign-out-alt"></i> Logout
-          </li>
-        </ul>
+  <li>
+    <NavLink to="/admin-dashboard/dashboard" className="menu-item" activeClassName="active">
+      <div className="menu-link">
+        <i className="fas fa-tachometer-alt"></i> Dashboard
+      </div>
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/admin-dashboard/invoices" className="menu-item" activeClassName="active">
+      <div className="menu-link">
+        <i className="fas fa-file-invoice"></i> Invoices / Quotations
+      </div>
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/admin-dashboard/stock" className="menu-item" activeClassName="active">
+      <div className="menu-link">
+        <i className="fas fa-warehouse"></i> Stock
+      </div>
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/admin-dashboard/items" className="menu-item" activeClassName="active">
+      <div className="menu-link">
+        <i className="fas fa-pen"></i> Items
+      </div>
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/admin-dashboard/analytics" className="menu-item" activeClassName="active">
+      <div className="menu-link">
+        <i className="fas fa-chart-line"></i> Analytics
+      </div>
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/admin-dashboard/customers" className="menu-item" activeClassName="active">
+      <div className="menu-link">
+        <i className="fas fa-users"></i> Customers
+      </div>
+    </NavLink>
+  </li>
+  <li>
+    <NavLink to="/admin-dashboard/users" className="menu-item" activeClassName="active">
+      <div className="menu-link">
+        <i className="fas fa-user-friends"></i> Users
+      </div>
+    </NavLink>
+  </li>
+  <li>
+  <NavLink 
+    to="/admin-login" 
+    className="menu-item" 
+    activeClassName="active" 
+    onClick={handleLogout}  // Add the logout function here
+  >
+    <div className="menu-link">
+      <i className="fas fa-sign-out-alt"></i> Logout
+    </div>
+  </NavLink>
+</li>
+
+ 
+</ul>
 
       </div>
 
       {/* Top Bar */}
       <div className="admin-topbar">
         <div className="admin-profile" onClick={handleProfileClick}>
-          <span className='admin-fullname'>{adminName}</span>
+          <span className="admin-fullname">{adminName}</span>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="admin-content">
-        {selectedMenu === 'dashboard' && <Dashboard />}
-        {selectedMenu === 'invoices' && <Invoices />}
-        {selectedMenu === 'stock' && <Stock />}
-        {selectedMenu === 'analytics' && <Analytics />}
-        {selectedMenu === 'customers' && <Customers />}
-        {selectedMenu === 'users' && <Users />}
+        <Routes>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="invoices" element={<Invoices />} />
+          <Route path="stock" element={<Stock />} />
+          <Route path="items" element={<Items />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="users" element={<Users />} />
+        </Routes>
       </div>
       <ToastContainer />
     </div>

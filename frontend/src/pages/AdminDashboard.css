@@ -1,8 +1,13 @@
-/* Sidebar */
-*
-.admin-dashboard{
+/* Sidebar Styles */
+.admin-dashboard {
   background-color: #eeeef0;
 }
+
+a, .active {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit text color from parent */
+}
+
 .admin-sidebar {
   text-align: left;
   width: 250px;
@@ -15,8 +20,23 @@
   height: 100vh; /* Full height sidebar */
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   z-index: 100;
-  transition: width 0.3s ease;
 }
+
+.admin-sidebar ul li {
+  padding: 0; /* Reset padding */
+}
+
+.admin-sidebar .menu-item {
+  display: flex; /* Flexbox to align content */
+  align-items: center; /* Center content vertically */
+  text-decoration: none; /* Remove underline */
+  padding: 10px; /* Add padding for spacing */
+  width: 100%; /* Make the entire item clickable */
+  height: 100%; /* Ensure full li coverage */
+  border-radius: 5px; /* Rounded corners */
+}
+
+
 
 .admin-sidebar.minimized {
   width: 80px; /* Minimized width */
@@ -32,11 +52,6 @@
   align-items: center;
 }
 
-.adminDash-logo i {
-  margin-right: 10px;
-  cursor: pointer;
-}
-
 .admin-sidebar ul {
   list-style: none;
   padding-left: 0px;
@@ -45,7 +60,7 @@
 }
 
 .admin-sidebar li {
-  width: 90%;
+  width: 90%; /* Make sure the list item fills the sidebar */
   font-family: Nunito;
   font-weight: 600;
   margin: 15px 0;
@@ -62,10 +77,12 @@
   background-color: #456EFE; /* Light background color on hover */
 }
 
-.admin-sidebar li.active {
+.admin-sidebar .active {
   font-weight: 700;
   color: #3759d3; /* Text color for the active item */
 }
+
+
 
 .admin-sidebar i {
   margin-right: 10px; /* Space between icon and text */
@@ -76,9 +93,17 @@
   color: white; /* Change icon color on hover */
 }
 
-.admin-sidebar li.active i {
+.admin-sidebar .active:hover i {
+  color: #3759d3; /* Hover color for active icon */
+}
+
+.admin-sidebar .active i {
   color: #3759d3; /* Change icon color on active state */
 }
+
+
+
+
 
 /* For minimized sidebar (hide text) */
 .admin-sidebar.minimized ul li span {
@@ -94,35 +119,36 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background-color: #fff;
+  color: white;
+  font-family: Nunito;
+  background-color: #191727;
   padding: 10px 20px;
   position: fixed;
   top: 0;
   right: 0;
   width: calc(100% - 250px); /* Adjust for sidebar width */
+  height: 40px;
 }
 
 .admin-profile {
+  align-items: center;
+  justify-content: center;
   height: 50px;
   margin-top: 10px;
 }
 
-.admin-profile :hover {
+.admin-profile:hover {
   cursor: pointer;
   font-weight: 600;
 }
 
 .admin-fullname {
-  margin-right: 10px;
+  margin: auto;
+  margin-top: 40px;
 }
 
-.admin-avatar :hover {
-  width: 55px;
-  height: 55px;
-}
+/* Main Content Styles */
 .admin-content {
-    margin-left: 290px; /* Match sidebar width */
-    padding: 80px 20px; /* Padding to avoid overlap with top bar */
-    
-  }
-  
+  margin-left: 290px; /* Match sidebar width */
+  padding: 80px 20px; /* Padding to avoid overlap with top bar */
+}

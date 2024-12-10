@@ -5,12 +5,13 @@ export default function Invoices() {
   return (
     <div className="invoices-content">
       <div className="header">
-        <h1>Product Purchase List</h1>
+        <h1>Invoice List</h1>
         <div className="actions">
           <button className="export-button"><i class="fas fa-file-export"></i> Export</button>
           <button className="add-button"><i className="icon fas fa-file-invoice"></i> Add Purchase</button>
         </div>
       </div>
+      
 
       <div className='invoice-table-content'>
 
@@ -75,9 +76,9 @@ export default function Invoices() {
       </table>
 
       <div className="pagination">
-        <button>Previous</button>
+        <button><i class="fas fa-arrow-left"></i></button>
         <span>1</span>
-        <button>Next</button>
+        <button><i class="fas fa-arrow-right"></i></button>
       </div>
       </div>
     </div>
