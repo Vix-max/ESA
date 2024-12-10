@@ -86,6 +86,22 @@
   width: 200px;
 }
 
+.items-category-filter{
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 14px;
+  color: #555;
+}
+
+.items-category-filter select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
 .items-entry-selector {
   margin-left: auto;
   display: flex;
@@ -167,7 +183,7 @@
   background-color: #ffffff;
   padding: 30px 20px;
   border-radius: 10px;
-  margin: 20px auto;
+  margin: 30px auto;
   font-family: Nunito, sans-serif;
 }
 
@@ -256,6 +272,7 @@
   border-radius: 5px;
   outline: none;
   resize: none;
+  font-family: nunito;
 }
 
 .category-description-input:focus {
