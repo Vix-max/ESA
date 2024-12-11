@@ -68,6 +68,52 @@
   background-color: rgb(241, 241, 241);
 }
 
+/* View switch Styling*/
+.view-switch {
+  text-align: left;
+  margin-left: 20px;
+  gap: 20px;
+}
+
+/* Individual Buttons */
+.view-switch button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  font-family: nunito;
+  border-radius: 7px;
+  color: rgb(118, 118, 118);
+  background-color: white;
+  cursor: pointer;
+}
+
+.view-switch button:first-child {
+  border-radius: 10px 0 0 0; /* Round top-left and bottom-left */
+}
+
+.view-switch button:nth-child(2) {
+  border-radius: 0;
+}
+
+
+.view-switch button:last-child {
+  border-radius: 0 10px 0px 0; /* Round top-right and bottom-right */
+}
+
+/* Active Button Style */
+.view-switch button.active {
+  background-color: #456efe;
+  color: white;
+  border-color: #456efe;
+}
+
+/* Button Hover Effect */
+.view-switch button:hover:not(.active) {
+  background-color: #f0f0f0;
+}
+
+
 /* Items Table Content */
 .items-table-content {
   font-family: Nunito;
@@ -211,6 +257,72 @@
   background-color: #3d60de;
 }
 
+
+
+
+
+
+/*Brand Table designs*/
+/* Categories and Brands Header */
+.categories-header, .brands-header {
+  font-family: nunito;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.categories-header h1, .brands-header h1 {
+  font-family: nunito;
+  font-size: 24px;
+  color: #333333;
+}
+
+.categories-actions, .brands-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.categories-add-button, .brands-add-button {
+  font-family: nunito;
+  padding: 10px 15px;
+  background-color: #456efe;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.categories-add-button:hover, .brands-add-button:hover {
+  background-color: #3d60de;
+}
+
+/* Table Content for Categories and Brands */
+.categories-table-content, .brands-table-content {
+  font-family: nunito;
+  padding: 5px 20px 20px 20px;
+  background-color: white;
+  border-radius: 20px;
+}
+
+/* Reuse Items Table Styles */
+.items-table th, .items-table td {
+  
+  font-family: nunito;
+  color: #333333;
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1.5px solid #e4e4e4;
+}
+
+
+
+
+
+
+
+
 /* Add Category Form */
 .category-form {
   text-align: left;
@@ -314,6 +426,66 @@
 }
 
 
+/*Attributes*/
+.category-attribute-input {
+  box-sizing: border-box;
+  width: 96%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  outline: none;
+  resize: none;
+  font-family: nunito;
+}
+
+.category-attribute-input:focus {
+  border-color: #456efe;
+}
+
+.add-attribute-button{
+  margin-top: 10px;
+}
+
+.remove-attribute-button {
+  margin-left: 10px;
+}
+
+.add-attribute-button,
+.remove-attribute-button {
+  background-color: #456efe;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-attribute-button:hover,
+.remove-attribute-button:hover {
+  background-color: #3d60de;
+}
+
+.add-attribute-button i,
+.remove-attribute-button i {
+  font-size: 14px;
+}
+
+.remove-attribute-button {
+  background-color: #f44336;
+}
+
+.remove-attribute-button:hover {
+  background-color: #d32f2f;
+}
+
+
+
 /* Add Category Form */
 .brand-form {
   text-align: left;
@@ -414,4 +586,97 @@
 
 .brand-description-input:focus {
   border-color: #456efe;
+}
+
+/*Add item form*/
+.item-form {
+  text-align: left;
+  background-color: #ffffff;
+  padding: 30px 20px;
+  border-radius: 10px;
+  margin: 30px auto;
+  font-family: Nunito, sans-serif;
+}
+
+.item-form-content h2 {
+  text-align: left;
+  font-family: Nunito, sans-serif;
+  font-size: 1.8em;
+  font-weight: 800;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+.item-form-group {
+  margin-bottom: 15px;
+}
+
+.item-form-group label {
+  
+  font-family: Nunito, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.item-input {
+  box-sizing: border-box;
+  font-family: Nunito, sans-serif;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.item-description-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  outline: none;
+  resize: none;
+  font-family: nunito;
+}
+
+.item-input:focus {
+  border-color: #456efe;
+}
+
+.item-form-actions {
+  
+  font-family: Nunito, sans-serif;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.add-item-button,
+.cancel-item-button {
+  
+  font-family: Nunito, sans-serif;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-item-button {
+  background-color: #456efe;
+  color: white;
+}
+
+.add-item-button:hover {
+  background-color: #3d60de;
+}
+
+.cancel-item-button:hover {
+  background-color: #e6e6e6;
 }

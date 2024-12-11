@@ -8,35 +8,46 @@ use App\Models\Category;
 class CategoryController extends Controller
 {
     public function index()
-    {
-        $categories = Category::all();
-        return response()->json([
-            'success' => true,
-            'categories' => $categories,
-        ]);
-    }
+{
+    $categories = Category::with('attributes')->get(); // Eager load attributes
+
+    return response()->json([
+        'success' => true,
+        'categories' => $categories,
+    ]);
+}
+
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|unique:categories',
-            'description' => 'nullable|string',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => 'required|string|unique:categories',
+        'description' => 'nullable|string',
+        'attributes' => 'nullable|array',
+    ]);
 
-        $category = Category::create($validated);
+    $category = Category::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Category added successfully!',
-            'category' => $category,
-        ], 201);
+    if (!empty($validated['attributes'])) {
+        foreach ($validated['attributes'] as $attributeName) {
+            $category->attributes()->create(['name' => $attributeName]);
+        }
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Category and attributes added successfully!',
+        'category' => $category->load('attributes'),
+    ], 201);
+}
+
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|unique:categories,name,' . $id,
             'description' => 'nullable|string',
+            'attributes' => 'nullable|array',
         ]);
 
         $category = Category::findOrFail($id);
@@ -48,7 +59,6 @@ class CategoryController extends Controller
             'category' => $category,
         ]);
     }
-
     public function destroy($id)
     {
         $category = Category::findOrFail($id);

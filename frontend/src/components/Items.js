@@ -6,16 +6,25 @@ export default function Items() {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [categories, setCategories] = useState([]); // State for categories
   const [showBrandForm, setShowBrandForm] = useState(false); // State for brand form visibility
+  const [showItemForm, setShowItemForm] = useState(false); // State for brand form visibility
   const [selectedCategory, setSelectedCategory] = useState("all"); // State for selected category filter
   const [items, setItems] = useState([]); // State for items
   const [brands, setBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("all");
+  const [attributes, setAttributes] = useState([]);
+  const [viewMode, setViewMode] = useState("items"); // Default to "items"
+  const [searchItem, setSearchItem] = useState(""); // State for item search
+  const [searchCategory, setSearchCategory] = useState(""); // State for category search
+  const [searchBrand, setSearchBrand] = useState(""); // State for brand search
+
 
   useEffect(() => {
     fetchCategories();
     fetchBrands(); // Fetch brands as well
     //fetchItems();
 }, []);
+
+
 
 const fetchCategories = () => {
   fetch('http://localhost:8000/api/getallcategories', {
@@ -24,13 +33,14 @@ const fetchCategories = () => {
   })
       .then(response => response.json())
       .then(data => {
-          if (Array.isArray(data.categories)) {
-              setCategories(data.categories); // Set the data if it's an array
-          } else {
-              console.error('Invalid categories data:', data.categories);
-              setCategories([]); // Set to empty array if data is invalid
-          }
-      })
+        console.log("categories: ", data.categories); // Check the structure of categories
+        if (Array.isArray(data.categories)) {
+            setCategories(data.categories); // Set the data if it's an array
+        } else {
+            console.error('Invalid categories data:', data.categories);
+            setCategories([]); // Set to empty array if data is invalid
+        }
+    })
       .catch(error => {
           console.error('Error fetching categories:', error);
           setCategories([]); // Ensure categories is still an array
@@ -66,48 +76,78 @@ const fetchBrands = () => {
       .catch(error => console.error('Error fetching items:', error));
   };*/
 
+  const handleAddItemClick = () => {
+    setShowCategoryForm(false);
+    setShowBrandForm(false);
+    setShowItemForm(true); // Ensure category form is hidden
+  };
+
+
   const handleAddCategoryClick = () => {
     setShowCategoryForm(true);
+    setShowBrandForm(false);
+    setShowItemForm(false); // Ensure category form is hidden
   };
 
   const handleAddBrandClick = () => {
     setShowBrandForm(true);
-    setShowCategoryForm(false); // Ensure category form is hidden
+    setShowCategoryForm(false);
+    setShowItemForm(false); // Ensure category form is hidden
   };
 
   const handleCancelCategoryClick = () => {setShowCategoryForm(false);};
   const handleCancelBrandClick = () => setShowBrandForm(false);
+  const handleCancelItemClick = () => setShowItemForm(false);
 
   // Add Category function
-const handleAddCategory = () => {
-  const categoryData = {
-      name: document.getElementById('category-name').value,
-      description: document.getElementById('category-description').value,
-  };
-
-  fetch('http://localhost:8000/api/addcategories', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      credentials: 'include', // Include cookies automatically
-      body: JSON.stringify(categoryData),
-  })
-      .then(response => response.json())
-      .then(data => {
+  const handleAddCategory = () => {
+      const categoryData = {
+        name: document.getElementById("category-name").value,
+        description: document.getElementById("category-description").value,
+        attributes, // Include the attributes state here
+      };
+    
+      fetch("http://localhost:8000/api/addcategories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include cookies automatically
+        body: JSON.stringify(categoryData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
           if (data.success) {
-              toast.success('Category added successfully!');
-              fetchCategories();
+            toast.success("Category added successfully!");
+            fetchCategories();
           } else {
-              toast.error('Failed to add category!');
+            toast.error("Failed to add category!");
           }
           console.log(data);
-      })
-      .catch(error => {
-          toast.error('An error occurred!');
-          console.error('Error:', error);
-      });
-};
+        })
+        .catch((error) => {
+          toast.error("An error occurred!");
+          console.error("Error:", error);
+        });
+    };
+    
+
+//Attributes
+
+    const handleAddAttribute = () => {
+      setAttributes([...attributes, ""]);
+    };
+
+    const handleAttributeChange = (e, index) => {
+      const updatedAttributes = [...attributes];
+      updatedAttributes[index] = e.target.value;
+      setAttributes(updatedAttributes);
+    };
+
+    const handleRemoveAttribute = (index) => {
+      const updatedAttributes = attributes.filter((_, i) => i !== index);
+      setAttributes(updatedAttributes);
+    };
 
 // Add Brand function
 const handleAddBrand = () => {
@@ -141,15 +181,22 @@ const handleAddBrand = () => {
 
   
   
-
-  const filteredItems = items.filter(item => {
+const filteredItems = items.filter(item => {
   const categoryMatch =
     selectedCategory === "all" || item.category === selectedCategory;
   const brandMatch = selectedBrand === "all" || item.brand === selectedBrand;
+  const nameMatch = item.name.toLowerCase().includes(searchItem.toLowerCase());
 
-  return categoryMatch && brandMatch;
+  return categoryMatch && brandMatch && nameMatch;
 });
 
+const filteredCategories = categories.filter(category =>
+  category.name.toLowerCase().includes(searchCategory.toLowerCase())
+);
+
+const filteredBrands = brands.filter(brand =>
+  brand.name.toLowerCase().includes(searchBrand.toLowerCase())
+);
 
   return (
     <div className="items-content">
@@ -176,6 +223,37 @@ const handleAddBrand = () => {
                   rows="4"
                 ></textarea>
               </div>
+              <div className="category-form-group">
+              <label htmlFor="category-attributes">Attributes</label>
+              <div id="category-attributes" className="attributes-section">
+                {attributes.map((attribute, index) => (
+                  <div key={index} className="attribute-row">
+                    <input
+                      type="text"
+                      placeholder="Attribute name"
+                      value={attribute}
+                      onChange={(e) => handleAttributeChange(e, index)}
+                      className="category-attribute-input"
+                    />
+                    <button
+                    type="button"
+                    className="remove-attribute-button"
+                    onClick={() => handleRemoveAttribute(index)}
+                  >
+                    <i className="fa fa-minus"></i>
+                  </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="add-attribute-button"
+                  onClick={handleAddAttribute}
+                >
+                  <i className="fa fa-plus"></i>
+                </button>
+              </div>
+            </div>
+
               <div className="category-form-actions">
                 <button
                   type="button"
@@ -237,9 +315,51 @@ const handleAddBrand = () => {
             </form>
           </div>
         </div>
+      ) : showItemForm ? (
+        <div className="item-form-content">
+          <h2>Add New Item</h2>
+          <div className="item-form">
+            <form>
+              <div className="item-form-group">
+                <label htmlFor="brand-name">Item Name</label>
+                <input
+                  type="text"
+                  id="item-name"
+                  placeholder="Enter item name"
+                  className="item-input"
+                />
+              </div>
+              <div className="item-form-group">
+                <label htmlFor="item-description">Item Description</label>
+                <textarea
+                  id="item-description"
+                  placeholder="Enter item description"
+                  className="item-description-input"
+                  rows="4"
+                ></textarea>
+              </div>
+              <div className="item-form-actions">
+                <button
+                  type="button"
+                  className="add-item-button"
+                  onClick={handleAddBrand}
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  className="cancel-item-button"
+                  onClick={handleCancelItemClick}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       ) : (
         <div>
-          <div className="items-header">
+           <div className="items-header">
             <h1>Items</h1>
             <div className="items-actions">
               <button
@@ -258,59 +378,74 @@ const handleAddBrand = () => {
               </button>
 
 
-              <button className="items-add-button">
+              <button 
+              className="items-add-button"
+              onClick={handleAddItemClick}
+              >
                 <i className="fas fa-plus-circle"></i> Add Item
               </button>
             </div>
           </div>
-          <div className="items-table-content">
-            <div className="items-filters">
-              <div className="items-search-filter">
-                <label htmlFor="search-item">Search Item</label>
-                <input
-                  type="text"
-                  id="search-item"
-                  placeholder="Enter item name"
-                />
-              </div>
-              <div className="items-category-filter">
-              <label htmlFor="category-filter">Filter by Category:</label>
-              <select
-                  id="category-filter"
-                  value={selectedCategory}
-                  onChange={e => setSelectedCategory(e.target.value)}
-              >
-                  <option value="all">All</option>
-                  {Array.isArray(categories) &&
-                      categories.map((category, index) => (
+          <div className="view-switch">
+            <button onClick={() => setViewMode("items")} className={viewMode === "items" ? "active" : ""}>
+                Items
+            </button>
+            <button onClick={() => setViewMode("categories")} className={viewMode === "categories" ? "active" : ""}>
+                Categories
+            </button>
+            <button onClick={() => setViewMode("brands")} className={viewMode === "brands" ? "active" : ""}>
+                Brands
+            </button>
+        </div>
+
+        {viewMode === "items" && (
+            <div className="items-view">
+              <div className="items-table-content">
+                <div className="items-filters">
+                  <div className="items-search-filter">
+                    <label htmlFor="search-item">Search Item</label>
+                    <input
+                      type="text"
+                      id="search-item"
+                      value={searchItem}
+                      onChange={(e) => setSearchItem(e.target.value)}
+                      placeholder="Enter item name"
+                    />
+                  </div>
+                  
+                  <div className="items-category-filter">
+                    <label htmlFor="category-filter">Filter by Category:</label>
+                    <select
+                      id="category-filter"
+                      value={selectedCategory}
+                      onChange={e => setSelectedCategory(e.target.value)}
+                    >
+                      <option value="all">All</option>
+                      {Array.isArray(categories) &&
+                        categories.map((category, index) => (
                           <option key={index} value={category.name}>
-                              {category.name}
+                            {category.name}
                           </option>
-                      ))}
-              </select>
-          </div>
-
-
-          <div className="items-brand-filter">
-          <label htmlFor="brand-filter">Filter by Brand:</label>
-          <select
-              id="brand-filter"
-              value={selectedBrand}
-              onChange={e => setSelectedBrand(e.target.value)}
-          >
-              <option value="all">All</option>
-              {Array.isArray(brands) &&
-                  brands.map((brand, index) => (
-                      <option key={index} value={brand.name}>
-                          {brand.name}
-                      </option>
-                  ))}
-          </select>
-      </div>
-
-
-
-              <div className="items-entry-selector">
+                        ))}
+                    </select>
+                  </div>
+                  <div className="items-brand-filter">
+                    <label htmlFor="brand-filter">Filter by Brand:</label>
+                    <select
+                      id="brand-filter"
+                      value={selectedBrand}
+                      onChange={e => setSelectedBrand(e.target.value)}
+                    >
+                      <option value="all">All</option>
+                      {Array.isArray(brands) &&
+                        brands.map((brand, index) => (
+                          <option key={index} value={brand.name}>
+                            {brand.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className="items-entry-selector">
                 <label htmlFor="items-entries">Show:</label>
                 <select id="items-entries" name="items-entries">
                   <option value="10">10</option>
@@ -320,53 +455,149 @@ const handleAddBrand = () => {
                 </select>
                 <span>entries</span>
               </div>
-              
+                </div>
+                <table className="items-table">
+                  <thead>
+                    <tr>
+                      <th>Sl</th>
+                      <th>Item ID</th>
+                      <th>Item Name</th>
+                      <th>Category</th>
+                      <th>Stock Quantity</th>
+                      <th>Unit Price</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredItems.map((item, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{item.id}</td>
+                        <td>{item.name}</td>
+                        <td>{item.category}</td>
+                        <td>{item.stockQuantity}</td>
+                        <td>${item.unitPrice}</td>
+                        <td>
+                          <div className="items-actions-dropdown">
+                            <button className="items-action-button">⋮</button>
+                            <div className="items-dropdown-content">
+                              <button>Edit</button>
+                              <button>Update</button>
+                              <button>Delete</button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <table className="items-table">
-              <thead>
-                <tr>
-                  <th>Sl</th>
-                  <th>Item ID</th>
-                  <th>Item Name</th>
-                  <th>Category</th>
-                  <th>Stock Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredItems.map((item, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.id}</td>
-                    <td>{item.name}</td>
-                    <td>{item.category}</td>
-                    <td>{item.stockQuantity}</td>
-                    <td>${item.unitPrice}</td>
-                    <td>
-                      <div className="items-actions-dropdown">
-                        <button className="items-action-button">⋮</button>
-                        <div className="items-dropdown-content">
-                          <button>Edit</button>
-                          <button>Update</button>
-                          <button>Delete</button>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="items-pagination">
-              <button>
-                <i className="fas fa-arrow-left"></i>
-              </button>
-              <span>1</span>
-              <button>
-                <i className="fas fa-arrow-right"></i>
-              </button>
+          )}
+
+          {viewMode === "categories" && (
+            <div className="categories-view">
+              <div className="categories-table-content">
+                <div className="categories-header">
+                  <div className="items-search-filter">
+                    <label htmlFor="search-category">Search Category</label>
+                    <input
+                      type="text"
+                      id="search-category"
+                      value={searchCategory}
+                      onChange={(e) => setSearchCategory(e.target.value)}
+                      placeholder="Enter category name"
+                    />
+                  </div>
+                  <div className="items-entry-selector">
+                <label htmlFor="items-entries">Show:</label>
+                <select id="items-entries" name="items-entries">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                <span>entries</span>
+              </div>
+                </div>
+                <table className="items-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Attributes</th>
+                      <th>Description</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredCategories.map((category) => (
+                      <tr key={category.id}>
+                        <td>{category.id}</td>
+                        <td>{category.name}</td>
+                        <td>{category.attributes?.map(attribute => attribute.name).join(", ")}</td> {/* Correct way to access attributes */}
+                        <td>{category.description}</td>
+                        <td>...</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          )}
+
+          {viewMode === "brands" && (
+            <div className="brands-view">
+              <div className="brands-table-content">
+                <div className="brands-header">
+                  <div className="items-search-filter">
+                    <label htmlFor="search-brand">Search Brand</label>
+                    <input
+                      type="text"
+                      id="search-brand"
+                      value={searchBrand}
+                      onChange={(e) => setSearchBrand(e.target.value)}
+                      placeholder="Enter brand name"
+                    />
+                  </div>
+                  <div className="items-entry-selector">
+                <label htmlFor="items-entries">Show:</label>
+                <select id="items-entries" name="items-entries">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                <span>entries</span>
+              </div>
+                </div>
+                <table className="items-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredBrands.map((brand) => (
+                      <tr key={brand.id}>
+                        <td>{brand.id}</td>
+                        <td>{brand.name}</td>
+                        <td>{brand.description}</td>
+                        <td>...</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+        
+
+          
         </div>
       )}
     </div>
