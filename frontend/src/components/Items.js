@@ -12,6 +12,7 @@ export default function Items() {
   const [brands, setBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("all");
   const [attributes, setAttributes] = useState([]);
+  const [itemAttributes, setItemAttributes] = useState([]);
   const [viewMode, setViewMode] = useState("items"); // Default to "items"
   const [searchItem, setSearchItem] = useState(""); // State for item search
   const [searchCategory, setSearchCategory] = useState(""); // State for category search
@@ -320,8 +321,9 @@ const filteredBrands = brands.filter(brand =>
           <h2>Add New Item</h2>
           <div className="item-form">
             <form>
+              {/* Item Name */}
               <div className="item-form-group">
-                <label htmlFor="brand-name">Item Name</label>
+                <label htmlFor="item-name">Item Name</label>
                 <input
                   type="text"
                   id="item-name"
@@ -329,22 +331,103 @@ const filteredBrands = brands.filter(brand =>
                   className="item-input"
                 />
               </div>
-              <div className="item-form-group">
-                <label htmlFor="item-description">Item Description</label>
-                <textarea
-                  id="item-description"
-                  placeholder="Enter item description"
-                  className="item-description-input"
-                  rows="4"
-                ></textarea>
+
+              <div className="prices-input-div">
+
+               {/*Sell Price */}
+               <div className="item-form-group-price">
+                <label htmlFor="item-sell-price">Item Sell Price</label>
+                <input
+                  type="number"
+                  id="item-sell-price"
+                  placeholder="Enter item Sell price (Rs.)"
+                  className="item-input"
+                  onWheel={(e) => e.target.blur()} // Prevent scrolling
+                />
               </div>
-              <div className="item-form-actions">
-                <button
-                  type="button"
-                  className="add-item-button"
-                  onClick={handleAddBrand}
+
+               {/*Market Price */}
+               <div className="item-form-group-price">
+                <label htmlFor="item-market-price">Item Market Price</label>
+                <input
+                  type="number"
+                  id="item-market-price"
+                  placeholder="Enter item Market price (Rs.)"
+                  className="item-input"
+                  onWheel={(e) => e.target.blur()} // Prevent scrolling
+                />
+              </div>
+              </div>
+              
+
+          
+
+              {/* Category Dropdown */}
+              <div className="item-form-group-category">
+                <label htmlFor="category-dropdown">Category</label>
+                <select
+                  id="category-dropdown"
+                  value={selectedCategory}
+                  onChange={(e) => {
+                    const selectedId = e.target.value; // Get the selected category ID
+                    const selectedCategoryObj = categories.find((category) => category.id.toString() === selectedId); // Match by ID
+                    
+                    setSelectedCategory(selectedId);
+                    setItemAttributes(selectedCategoryObj?.attributes || []); // Update attributes based on selected category
+                    
+                  }}
+                  className="item-dropdown"
                 >
-                  Add
+                  <option value="">Select Category</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+
+              {/* Brand Dropdown */}
+              <div className="item-form-group-brand">
+                <label htmlFor="brand-dropdown">Brand</label>
+                <select
+                  id="brand-dropdown"
+                  value={selectedBrand}
+                  onChange={(e) => setSelectedBrand(e.target.value)}
+                  className="item-dropdown"
+                >
+                  <option value="">Select Brand</option>
+                  {brands.map((brand, index) => (
+                    <option key={index} value={brand.name}>
+                      {brand.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+             {/* Dynamic Attributes */}
+          {itemAttributes.length > 0 && (
+            <div className="item-form-group">
+              {itemAttributes.map((attribute, index) => (
+                <div key={index} className="item-attribute-row">
+                  <label>{attribute.name}</label> {/* Use the `name` property */}
+                  <input
+                    type="text"
+                    placeholder={`Enter ${attribute.name}`} 
+                    className="item-attribute-input"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+
+
+              {/* Actions */}
+              <div className="item-form-actions">
+                <button type="button" className="add-item-button" onClick={() => {/* Handle Save Item */}}>
+                  Add Item
                 </button>
                 <button
                   type="button"
@@ -357,6 +440,7 @@ const filteredBrands = brands.filter(brand =>
             </form>
           </div>
         </div>
+
       ) : (
         <div>
            <div className="items-header">

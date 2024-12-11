@@ -621,6 +621,91 @@
   margin-bottom: 5px;
 }
 
+.item-form-group-category {
+  
+  margin-right: 10px;
+  width: 49%;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.prices-input-div{
+  display: flex;
+  width: 100%;
+  justify-content: space-between !important;
+}
+
+/*Prices styling*/
+.item-form-group-price {
+  margin: auto;
+  display: inline-block;
+  width: 49%;
+  margin-bottom: 15px;
+}
+
+.item-form-group-price label {
+  
+  font-family: Nunito, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+
+
+.item-form-group-category label {
+  
+  font-family: Nunito, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.item-form-group-category select {
+  width: 100%;
+  display: inline-block;
+  box-sizing: border-box;
+  font-family: Nunito, sans-serif;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.item-form-group-brand {
+  width: 50%;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.item-form-group-brand label {
+  
+  font-family: Nunito, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.item-form-group-brand select {
+
+  box-sizing: border-box;
+  font-family: Nunito, sans-serif;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+
 .item-input {
   box-sizing: border-box;
   font-family: Nunito, sans-serif;
@@ -631,6 +716,22 @@
   border-radius: 5px;
   outline: none;
 }
+
+.item-attribute-input{
+  box-sizing: border-box;
+  font-family: Nunito, sans-serif;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.item-attribute-row{
+  margin-bottom: 15px;
+}
+
 
 .item-description-input {
   box-sizing: border-box;
