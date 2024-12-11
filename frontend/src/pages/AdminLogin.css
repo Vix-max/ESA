@@ -133,3 +133,18 @@ body{
     font-size: 18px; /* Adjust font size if needed */
     color: #a5a5a5; /* Change color if needed */
 }
+
+.password-toggle-icon {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 15px; /* Adjust font size for better visibility */
+    color: #a5a5a5; /* Neutral color for the icon */
+    transition: color 0.2s ease-in-out;
+}
+
+.password-toggle-icon:hover {
+    color: #456EFE; /* Highlight color on hover */
+}

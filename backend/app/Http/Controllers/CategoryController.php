@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 
-
 class CategoryController extends Controller
 {
-        public function index()
+    public function index()
     {
         $categories = Category::all();
-        return response()->json($categories);
+        return response()->json([
+            'success' => true,
+            'categories' => $categories,
+        ]);
     }
 
     public function store(Request $request)
@@ -24,12 +26,11 @@ class CategoryController extends Controller
         $category = Category::create($validated);
 
         return response()->json([
-            'success' => true, // Add this line
+            'success' => true,
             'message' => 'Category added successfully!',
             'category' => $category,
         ], 201);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -42,19 +43,20 @@ class CategoryController extends Controller
         $category->update($validated);
 
         return response()->json([
+            'success' => true,
             'message' => 'Category updated successfully!',
-            'category' => $category
+            'category' => $category,
         ]);
     }
+
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
         $category->delete();
 
-        return response()->json(['message' => 'Category deleted successfully!']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Category deleted successfully!',
+        ]);
     }
-
-
-            
-
 }

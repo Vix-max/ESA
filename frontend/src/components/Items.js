@@ -5,66 +5,151 @@ import { toast } from 'react-toastify';
 export default function Items() {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [categories, setCategories] = useState([]); // State for categories
+  const [showBrandForm, setShowBrandForm] = useState(false); // State for brand form visibility
   const [selectedCategory, setSelectedCategory] = useState("all"); // State for selected category filter
   const [items, setItems] = useState([]); // State for items
+  const [brands, setBrands] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState("all");
 
   useEffect(() => {
     fetchCategories();
-    fetchItems();
-  }, []);
+    fetchBrands(); // Fetch brands as well
+    //fetchItems();
+}, []);
 
-  const fetchCategories = () => {
-    fetch('http://localhost:8000/api/getallcategories')
+const fetchCategories = () => {
+  fetch('http://localhost:8000/api/getallcategories', {
+      method: 'GET',
+      credentials: 'include', // Include cookies automatically
+  })
       .then(response => response.json())
-      .then(data => setCategories(data))
-      .catch(error => console.error('Error fetching categories:', error));
-  };
+      .then(data => {
+          if (Array.isArray(data.categories)) {
+              setCategories(data.categories); // Set the data if it's an array
+          } else {
+              console.error('Invalid categories data:', data.categories);
+              setCategories([]); // Set to empty array if data is invalid
+          }
+      })
+      .catch(error => {
+          console.error('Error fetching categories:', error);
+          setCategories([]); // Ensure categories is still an array
+      });
+};
 
-  const fetchItems = () => {
+
+const fetchBrands = () => {
+  fetch('http://localhost:8000/api/getallbrands', {
+      method: 'GET',
+      credentials: 'include', // Include cookies automatically
+  })
+      .then(response => response.json())
+      .then(data => {
+          if (Array.isArray(data.brands)) {
+              setBrands(data.brands); // Set the data if it's an array
+          } else {
+              console.error('Invalid brands data:', data.brands);
+              setBrands([]); // Set to empty array if data is invalid
+          }
+      })
+      .catch(error => {
+          console.error('Error fetching brands:', error);
+          setBrands([]); // Ensure brands is still an array
+      });
+};
+
+
+  /*const fetchItems = () => {
     fetch('http://localhost:8000/api/items')
       .then(response => response.json())
       .then(data => setItems(data))
       .catch(error => console.error('Error fetching items:', error));
-  };
+  };*/
 
   const handleAddCategoryClick = () => {
     setShowCategoryForm(true);
   };
 
-  const handleCancelCategoryClick = () => {
-    setShowCategoryForm(false);
+  const handleAddBrandClick = () => {
+    setShowBrandForm(true);
+    setShowCategoryForm(false); // Ensure category form is hidden
   };
 
-  const handleAddCategory = () => {
-    const categoryData = {
+  const handleCancelCategoryClick = () => {setShowCategoryForm(false);};
+  const handleCancelBrandClick = () => setShowBrandForm(false);
+
+  // Add Category function
+const handleAddCategory = () => {
+  const categoryData = {
       name: document.getElementById('category-name').value,
       description: document.getElementById('category-description').value,
-    };
-
-    fetch('http://localhost:8000/api/addcategories', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(categoryData),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          toast.success('Category added successfully!');
-          fetchCategories();
-        } else {
-          toast.error('Failed to add category!');
-        }
-        console.log(data);
-      })
-      .catch(error => {
-        toast.error('An error occurred!');
-        console.error('Error:', error);
-      });
   };
 
-  const filteredItems = selectedCategory === "all" 
-    ? items 
-    : items.filter(item => item.category === selectedCategory);
+  fetch('http://localhost:8000/api/addcategories', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Include cookies automatically
+      body: JSON.stringify(categoryData),
+  })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              toast.success('Category added successfully!');
+              fetchCategories();
+          } else {
+              toast.error('Failed to add category!');
+          }
+          console.log(data);
+      })
+      .catch(error => {
+          toast.error('An error occurred!');
+          console.error('Error:', error);
+      });
+};
+
+// Add Brand function
+const handleAddBrand = () => {
+  const brandData = {
+      name: document.getElementById('brand-name').value,
+      description: document.getElementById('brand-description').value,
+  };
+
+  fetch('http://localhost:8000/api/addbrand', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Include cookies automatically
+      body: JSON.stringify(brandData),
+  })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              toast.success('Brand added successfully!');
+              fetchBrands();
+          } else {
+              toast.error('Failed to add brand!');
+          }
+      })
+      .catch(error => {
+          toast.error('An error occurred!');
+          console.error('Error:', error);
+      });
+};
+
+  
+  
+
+  const filteredItems = items.filter(item => {
+  const categoryMatch =
+    selectedCategory === "all" || item.category === selectedCategory;
+  const brandMatch = selectedBrand === "all" || item.brand === selectedBrand;
+
+  return categoryMatch && brandMatch;
+});
+
 
   return (
     <div className="items-content">
@@ -110,6 +195,48 @@ export default function Items() {
             </form>
           </div>
         </div>
+      ) : showBrandForm ? (
+        <div className="brand-form-content">
+          <h2>Add New Brand</h2>
+          <div className="brand-form">
+            <form>
+              <div className="brand-form-group">
+                <label htmlFor="brand-name">Brand Name</label>
+                <input
+                  type="text"
+                  id="brand-name"
+                  placeholder="Enter brand name"
+                  className="brand-input"
+                />
+              </div>
+              <div className="brand-form-group">
+                <label htmlFor="brand-description">Brand Description</label>
+                <textarea
+                  id="brand-description"
+                  placeholder="Enter brand description"
+                  className="brand-description-input"
+                  rows="4"
+                ></textarea>
+              </div>
+              <div className="brand-form-actions">
+                <button
+                  type="button"
+                  className="add-brand-button"
+                  onClick={handleAddBrand}
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  className="cancel-brand-button"
+                  onClick={handleCancelBrandClick}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       ) : (
         <div>
           <div className="items-header">
@@ -121,6 +248,16 @@ export default function Items() {
               >
                 <i className="fas fa-folder-plus"></i> Add Category
               </button>
+
+              <button
+                className="items-brand-button"
+                onClick={handleAddBrandClick}
+              >
+               <i className="fas fa-tag"></i> Add Brand
+
+              </button>
+
+
               <button className="items-add-button">
                 <i className="fas fa-plus-circle"></i> Add Item
               </button>
@@ -137,20 +274,42 @@ export default function Items() {
                 />
               </div>
               <div className="items-category-filter">
-                <label htmlFor="category-filter">Filter by Category:</label>
-                <select
+              <label htmlFor="category-filter">Filter by Category:</label>
+              <select
                   id="category-filter"
                   value={selectedCategory}
                   onChange={e => setSelectedCategory(e.target.value)}
-                >
+              >
                   <option value="all">All</option>
-                  {categories.map((category, index) => (
-                    <option key={index} value={category.name}>
-                      {category.name}
-                    </option>
+                  {Array.isArray(categories) &&
+                      categories.map((category, index) => (
+                          <option key={index} value={category.name}>
+                              {category.name}
+                          </option>
+                      ))}
+              </select>
+          </div>
+
+
+          <div className="items-brand-filter">
+          <label htmlFor="brand-filter">Filter by Brand:</label>
+          <select
+              id="brand-filter"
+              value={selectedBrand}
+              onChange={e => setSelectedBrand(e.target.value)}
+          >
+              <option value="all">All</option>
+              {Array.isArray(brands) &&
+                  brands.map((brand, index) => (
+                      <option key={index} value={brand.name}>
+                          {brand.name}
+                      </option>
                   ))}
-                </select>
-              </div>
+          </select>
+      </div>
+
+
+
               <div className="items-entry-selector">
                 <label htmlFor="items-entries">Show:</label>
                 <select id="items-entries" name="items-entries">

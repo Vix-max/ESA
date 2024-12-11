@@ -31,20 +31,19 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const token = Cookies.get('auth_token');
       await axios.post('http://localhost:8000/api/admin/logout', {}, {
         withCredentials: true,
-        headers: { Authorization: `Bearer ${token}` },
       });
+  
       Cookies.remove('auth_token');
       Cookies.remove('adminName');
-      toast.success('Logged out successfully!', {
-        autoClose: 2500,
-      });
+      toast.success('Logged out successfully!', { autoClose: 2500 });
     } catch (error) {
-      toast.error('Logout failed. Please try again.');
+      toast.error('Logout failed. Please try again.', { autoClose: 2500 });
+      console.error('Logout error:', error.response || error.message);
     }
   };
+  
 
   const handleProfileClick = () => {
     // Logic for profile click (if needed)

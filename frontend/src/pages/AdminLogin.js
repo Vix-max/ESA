@@ -4,6 +4,7 @@ import user from '../media/user.png';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importing icons
 import axios from 'axios';
 
 const AdminLogin = () => {
@@ -25,7 +26,6 @@ const AdminLogin = () => {
       } else if (userRole === 'staff') {
         navigate('/staffdashboard');
       }
-      
     } catch (error) {
       toast.error('Invalid username or password. Please try again');
     }
@@ -60,13 +60,12 @@ const AdminLogin = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <button
-                type="button"
-                className="password-toggle-btn"
+              <span
+                className="password-toggle-icon"
                 onClick={() => setPasswordVisible(!passwordVisible)} // Toggle the state
               >
-                {passwordVisible ? "Hide" : "Show"}
-              </button>
+                {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
             <button type="submit" className="adminLogin-login">Login</button>
           </form>
