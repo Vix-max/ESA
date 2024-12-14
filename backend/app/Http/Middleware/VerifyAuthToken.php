@@ -18,6 +18,10 @@ class VerifyAuthToken
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        return $next($request);
+        // Get the response and set the CORS header
+        $response = $next($request);
+
+
+        return $response;
     }
 }

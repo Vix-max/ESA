@@ -8,15 +8,22 @@ export default function Items() {
   const [showBrandForm, setShowBrandForm] = useState(false); // State for brand form visibility
   const [showItemForm, setShowItemForm] = useState(false); // State for brand form visibility
   const [selectedCategory, setSelectedCategory] = useState("all"); // State for selected category filter
+  const [selectedFilterCategory, setSelectedFilterCategory] = useState("all"); // State for selected category filter
   const [items, setItems] = useState([]); // State for items
   const [brands, setBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("all");
+  const [selecteFilterdBrand, setSelectedFilterBrand] = useState("all");
   const [attributes, setAttributes] = useState([]);
   const [itemAttributes, setItemAttributes] = useState([]);
   const [viewMode, setViewMode] = useState("items"); // Default to "items"
   const [searchItem, setSearchItem] = useState(""); // State for item search
   const [searchCategory, setSearchCategory] = useState(""); // State for category search
   const [searchBrand, setSearchBrand] = useState(""); // State for brand search
+  const [variants, setVariants] = useState([]);
+  const [itemName, setItemName] = useState("");
+  const [allItems, setAllItems] = useState([]); // All items fetched from the server
+  const [displayedItems, setDisplayedItems] = useState([]); // Filtered items for 
+
 
 
   useEffect(() => {
@@ -25,6 +32,49 @@ export default function Items() {
     //fetchItems();
 }, []);
 
+const addVariant = () => {
+  const newVariant = {
+    attributes: {},
+    sellPrice: "",
+    marketPrice: "",
+  };
+  setVariants([...variants, newVariant]);
+};
+
+const removeVariant = () => {
+  if (variants.length > 0) {
+    setVariants(variants.slice(0, variants.length - 1));
+  }
+};
+const handlePriceChange = (e, index, type) => {
+  const updatedVariants = [...variants];
+  if (type === "sellPrice") {
+    updatedVariants[index].sellPrice = e.target.value;
+  } else if (type === "marketPrice") {
+    updatedVariants[index].marketPrice = e.target.value;
+  }
+  setVariants(updatedVariants);
+};
+
+    //Display items 
+    useEffect(() => {
+      // Fetch items from the server
+      const fetchItems = async () => {
+        try {
+          const response = await fetch("http://localhost:8000/api/getallitems");
+          const data = await response.json();
+          setAllItems(data.items); // Assuming `data.items` contains the list of items with variants
+          setDisplayedItems(data.items); // Initially display all items
+          
+        } catch (error) {
+          console.error("Error fetching items:", error);
+        }
+      };
+
+      fetchItems();
+    }, []);
+
+    
 
 
 const fetchCategories = () => {
@@ -34,7 +84,6 @@ const fetchCategories = () => {
   })
       .then(response => response.json())
       .then(data => {
-        console.log("categories: ", data.categories); // Check the structure of categories
         if (Array.isArray(data.categories)) {
             setCategories(data.categories); // Set the data if it's an array
         } else {
@@ -70,12 +119,7 @@ const fetchBrands = () => {
 };
 
 
-  /*const fetchItems = () => {
-    fetch('http://localhost:8000/api/items')
-      .then(response => response.json())
-      .then(data => setItems(data))
-      .catch(error => console.error('Error fetching items:', error));
-  };*/
+  
 
   const handleAddItemClick = () => {
     setShowCategoryForm(false);
@@ -124,7 +168,6 @@ const fetchBrands = () => {
           } else {
             toast.error("Failed to add category!");
           }
-          console.log(data);
         })
         .catch((error) => {
           toast.error("An error occurred!");
@@ -139,10 +182,13 @@ const fetchBrands = () => {
       setAttributes([...attributes, ""]);
     };
 
-    const handleAttributeChange = (e, index) => {
-      const updatedAttributes = [...attributes];
-      updatedAttributes[index] = e.target.value;
-      setAttributes(updatedAttributes);
+    const handleAttributeChange = (e, variantIndex, attributeName) => {
+      const updatedVariants = [...variants];  // Create a copy of variants to avoid direct mutation
+      updatedVariants[variantIndex].attributes = {
+        ...updatedVariants[variantIndex].attributes,  // Preserve other attributes
+        [attributeName]: e.target.value,  // Update the specific attribute
+      };
+      setVariants(updatedVariants);  // Update the state with the new value
     };
 
     const handleRemoveAttribute = (index) => {
@@ -180,16 +226,98 @@ const handleAddBrand = () => {
       });
 };
 
-  
-  
-const filteredItems = items.filter(item => {
-  const categoryMatch =
-    selectedCategory === "all" || item.category === selectedCategory;
-  const brandMatch = selectedBrand === "all" || item.brand === selectedBrand;
-  const nameMatch = item.name.toLowerCase().includes(searchItem.toLowerCase());
+  //Add items
+  const handleSaveItem = async () => {
+    const itemData = {
+      name: itemName,
+      category_id: selectedCategory,
+      brand: selectedBrand,
+      variants: variants.map(variant => ({
+        attributes: variant.attributes,
+        sell_price: variant.sellPrice,
+        market_price: variant.marketPrice,
+      })),
+    };
 
-  return categoryMatch && brandMatch && nameMatch;
-});
+
+
+    try {
+      const response = await fetch('http://localhost:8000/api/additems', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies automatically
+        body: JSON.stringify(itemData),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`Validation Error: ${errorData.message}`);
+        console.error('Validation Errors:', errorData.errors);
+        return;
+      }
+      
+
+      if (data.success) {
+        toast.success('Item added successfully!');
+      } else {
+        toast.error('Failed to add item!');
+      }
+    } catch (error) {
+      toast.error('An error occurred while adding the item!');
+      console.error('Error saving item:', error);
+    }
+  };
+
+  
+
+// Filter items based on search, category, and brand
+    useEffect(() => {
+      const filtered = allItems.filter((item) => {
+        // Ensure you're comparing category IDs or a specific property
+        const matchesCategory =
+          selectedFilterCategory === "all" || categories.find(category => category.id === item.category_id)?.name === selectedFilterCategory;
+          
+
+        const matchesBrand =
+        selecteFilterdBrand === "all" || item.brand === selecteFilterdBrand;
+
+        const matchesSearch =
+        searchItem === "" || 
+        item.variants.some(variant => {
+          // Combine variant attributes into a searchable string
+          const variantAttributes = Object.values(variant.attributes || {}).join(' ');
+          const searchableString = `${variantAttributes} ${item.name}`;
+          return searchableString.toLowerCase().includes(searchItem.toLowerCase());
+        });
+        
+
+
+
+        return matchesCategory && matchesBrand && matchesSearch;
+      });
+
+      // Flatten variants into separate rows
+      const itemsWithVariants = filtered.flatMap((item) =>
+        item.variants.map((variant, index) => ({
+          ...item,
+          variantIndex: index + 1,
+          attributes: variant.attributes,
+          sellPrice: variant.sell_price,
+          marketPrice: variant.market_price,
+          stockAmount: variant.stock_amount,
+        }))
+      );
+
+      setDisplayedItems(itemsWithVariants);
+    }, [searchItem, selectedFilterCategory, selecteFilterdBrand, allItems]);
+
+
+  
+  
+
 
 const filteredCategories = categories.filter(category =>
   category.name.toLowerCase().includes(searchCategory.toLowerCase())
@@ -204,6 +332,7 @@ const filteredBrands = brands.filter(brand =>
       {showCategoryForm ? (
         <div className="category-form-content">
           <h2>Add New Category</h2>
+          <p>Items \ Add New Category</p>
           <div className="category-form">
             <form>
               <div className="category-form-group">
@@ -277,6 +406,7 @@ const filteredBrands = brands.filter(brand =>
       ) : showBrandForm ? (
         <div className="brand-form-content">
           <h2>Add New Brand</h2>
+          <p>Items \ Add New Brand</p>
           <div className="brand-form">
             <form>
               <div className="brand-form-group">
@@ -319,6 +449,7 @@ const filteredBrands = brands.filter(brand =>
       ) : showItemForm ? (
         <div className="item-form-content">
           <h2>Add New Item</h2>
+          <p>Items \ Add New Item</p>
           <div className="item-form">
             <form>
               {/* Item Name */}
@@ -327,40 +458,12 @@ const filteredBrands = brands.filter(brand =>
                 <input
                   type="text"
                   id="item-name"
+                  value={itemName}
+                  onChange={(e) => setItemName(e.target.value)} // Update state using setItemName
                   placeholder="Enter item name"
                   className="item-input"
                 />
               </div>
-
-              <div className="prices-input-div">
-
-               {/*Sell Price */}
-               <div className="item-form-group-price">
-                <label htmlFor="item-sell-price">Item Sell Price</label>
-                <input
-                  type="number"
-                  id="item-sell-price"
-                  placeholder="Enter item Sell price (Rs.)"
-                  className="item-input"
-                  onWheel={(e) => e.target.blur()} // Prevent scrolling
-                />
-              </div>
-
-               {/*Market Price */}
-               <div className="item-form-group-price">
-                <label htmlFor="item-market-price">Item Market Price</label>
-                <input
-                  type="number"
-                  id="item-market-price"
-                  placeholder="Enter item Market price (Rs.)"
-                  className="item-input"
-                  onWheel={(e) => e.target.blur()} // Prevent scrolling
-                />
-              </div>
-              </div>
-              
-
-          
 
               {/* Category Dropdown */}
               <div className="item-form-group-category">
@@ -369,12 +472,12 @@ const filteredBrands = brands.filter(brand =>
                   id="category-dropdown"
                   value={selectedCategory}
                   onChange={(e) => {
-                    const selectedId = e.target.value; // Get the selected category ID
-                    const selectedCategoryObj = categories.find((category) => category.id.toString() === selectedId); // Match by ID
-                    
+                    const selectedId = e.target.value;
+                    const selectedCategoryObj = categories.find(
+                      (category) => category.id.toString() === selectedId
+                    );
                     setSelectedCategory(selectedId);
-                    setItemAttributes(selectedCategoryObj?.attributes || []); // Update attributes based on selected category
-                    
+                    setItemAttributes(selectedCategoryObj?.attributes || []);
                   }}
                   className="item-dropdown"
                 >
@@ -386,7 +489,6 @@ const filteredBrands = brands.filter(brand =>
                   ))}
                 </select>
               </div>
-
 
               {/* Brand Dropdown */}
               <div className="item-form-group-brand">
@@ -406,27 +508,93 @@ const filteredBrands = brands.filter(brand =>
                 </select>
               </div>
 
-             {/* Dynamic Attributes */}
-          {itemAttributes.length > 0 && (
-            <div className="item-form-group">
-              {itemAttributes.map((attribute, index) => (
-                <div key={index} className="item-attribute-row">
-                  <label>{attribute.name}</label> {/* Use the `name` property */}
-                  <input
-                    type="text"
-                    placeholder={`Enter ${attribute.name}`} 
-                    className="item-attribute-input"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+              {/* Dynamic Attributes */}
+        {itemAttributes.length > 0 && (
+          <div className="variants-section">
+            <h3>Variants</h3>
 
+            {/* Variants List */}
+            {variants.map((variant, variantIndex) => (
+              <div key={variantIndex} className="variant-item">
+                {/* Attribute Inputs for the Variant */}
+                <div className="variant-attributes">
+                  {itemAttributes.map((attribute, index) => (
+                    <div key={index} className="item-attribute-row">
+                      <label>{attribute.name}</label>
+                      <input
+                        type="text"
+                        value={variant.attributes[attribute.name] || ""}
+                        onChange={(e) => handleAttributeChange(e, variantIndex, attribute.name)}
+                        placeholder={`Enter ${attribute.name}`}
+                        className="item-attribute-input"
+                      />
+                    </div>
+                  ))}
+                  <div className="variant-price-group">
+                    <label htmlFor={`variant-sell-price-${variantIndex}`}>
+                      Sell Price (Rs.)
+                    </label>
+                    <input
+                      type="number"
+                      id={`variant-sell-price-${variantIndex}`}
+                      value={variant.sellPrice || ""}
+                      onChange={(e) => handlePriceChange(e, variantIndex, "sellPrice")}
+                      className="item-input"
+                      onWheel={(e) => e.target.blur()} // Prevent scrolling
+                      placeholder="Enter sell price"
+                    />
+                  </div>
+
+                  <div className="variant-price-group">
+                    <label htmlFor={`variant-market-price-${variantIndex}`}>
+                      Market Price (Rs.)
+                    </label>
+                    <input
+                      type="number"
+                      id={`variant-market-price-${variantIndex}`}
+                      value={variant.marketPrice || ""}
+                      onChange={(e) => handlePriceChange(e, variantIndex, "marketPrice")}
+                      className="item-input"
+                      onWheel={(e) => e.target.blur()} // Prevent scrolling
+                      placeholder="Enter market price"
+                    />
+                  </div>
+                </div>
+
+                {/* Price Inputs for the Variant */}
+                <div className="variant-prices">
+                  
+                </div>
+              </div>
+            ))}
+            {/* Add/Remove Variant Buttons */}
+            <div className="add-remove-variant-buttons">
+              <button
+                type="button"
+                onClick={() => addVariant()}
+                className="add-variant-button"
+              >
+                Add +
+              </button>
+              <button
+                type="button"
+                onClick={() => removeVariant()}
+                className="remove-variant-button"
+              >
+                Remove x
+              </button>
+            </div>
+          </div>
+        )}
 
 
               {/* Actions */}
               <div className="item-form-actions">
-                <button type="button" className="add-item-button" onClick={() => {/* Handle Save Item */}}>
+                <button
+                  type="button"
+                  className="add-item-button"
+                  onClick={handleSaveItem}
+                >
                   Add Item
                 </button>
                 <button
@@ -440,6 +608,7 @@ const filteredBrands = brands.filter(brand =>
             </form>
           </div>
         </div>
+
 
       ) : (
         <div>
@@ -484,83 +653,95 @@ const filteredBrands = brands.filter(brand =>
 
         {viewMode === "items" && (
             <div className="items-view">
-              <div className="items-table-content">
-                <div className="items-filters">
-                  <div className="items-search-filter">
-                    <label htmlFor="search-item">Search Item</label>
-                    <input
-                      type="text"
-                      id="search-item"
-                      value={searchItem}
-                      onChange={(e) => setSearchItem(e.target.value)}
-                      placeholder="Enter item name"
-                    />
-                  </div>
-                  
-                  <div className="items-category-filter">
-                    <label htmlFor="category-filter">Filter by Category:</label>
-                    <select
-                      id="category-filter"
-                      value={selectedCategory}
-                      onChange={e => setSelectedCategory(e.target.value)}
-                    >
-                      <option value="all">All</option>
-                      {Array.isArray(categories) &&
-                        categories.map((category, index) => (
-                          <option key={index} value={category.name}>
-                            {category.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                  <div className="items-brand-filter">
-                    <label htmlFor="brand-filter">Filter by Brand:</label>
-                    <select
-                      id="brand-filter"
-                      value={selectedBrand}
-                      onChange={e => setSelectedBrand(e.target.value)}
-                    >
-                      <option value="all">All</option>
-                      {Array.isArray(brands) &&
-                        brands.map((brand, index) => (
-                          <option key={index} value={brand.name}>
-                            {brand.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                  <div className="items-entry-selector">
-                <label htmlFor="items-entries">Show:</label>
-                <select id="items-entries" name="items-entries">
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
-                <span>entries</span>
-              </div>
+            <div className="items-table-content">
+              <div className="items-filters">
+                <div className="items-search-filter">
+                  <label htmlFor="search-item">Search Item</label>
+                  <input
+                    type="text"
+                    id="search-item"
+                    value={searchItem}
+                    onChange={(e) => setSearchItem(e.target.value)}
+                    placeholder="Enter item name"
+                  />
                 </div>
-                <table className="items-table">
-                  <thead>
-                    <tr>
-                      <th>Sl</th>
-                      <th>Item ID</th>
-                      <th>Item Name</th>
-                      <th>Category</th>
-                      <th>Stock Quantity</th>
-                      <th>Unit Price</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredItems.map((item, index) => (
+                <div className="items-category-filter">
+                  <label htmlFor="category-filter">Filter by Category:</label>
+                  <select
+                    id="category-filter"
+                    value={selectedFilterCategory}
+                    onChange={(e) => setSelectedFilterCategory(e.target.value)}
+                  >
+                    <option value="all">All</option>
+                    {Array.isArray(categories) &&
+                      categories.map((category, index) => (
+                        <option key={index} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="items-brand-filter">
+                  <label htmlFor="brand-filter">Filter by Brand:</label>
+                  <select
+                    id="brand-filter"
+                    value={selecteFilterdBrand}
+                    onChange={(e) => setSelectedFilterBrand(e.target.value)}
+                  >
+                    <option value="all">All</option>
+                    {Array.isArray(brands) &&
+                      brands.map((brand, index) => (
+                        <option key={index} value={brand.name}>
+                          {brand.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="items-entry-selector">
+                  <label htmlFor="items-entries">Show:</label>
+                  <select id="items-entries" name="items-entries">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                  <span>entries</span>
+                </div>
+              </div>
+              
+              <table className="items-table">
+                <thead>
+                  <tr>
+                    <th>Item Count</th>
+                    <th>Item ID</th>
+                    <th>Item Name</th>
+                    <th>Category</th>
+                    <th>Brand</th>
+                    <th>Stock Quantity</th>
+                    <th>Sell Price</th>
+                    <th>Market Price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {displayedItems.map((item, index) => {
+                    // Combine the attributes with the item name dynamically
+                    const itemAttributes = item.attributes
+                      ? Object.values(item.attributes).join(' ') // Combine attribute values with space
+                      : '';
+          
+                    const itemNameWithAttributes = `${itemAttributes} ${item.name}`.trim(); // Combine and trim any extra spaces
+          
+                    return (
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td>{item.category}</td>
-                        <td>{item.stockQuantity}</td>
-                        <td>${item.unitPrice}</td>
+                        <td>{item.variantId}</td>
+                        <td><strong>{itemNameWithAttributes}</strong></td> {/* Display combined name */}
+                        <td>{categories.find(category => category.id === item.category_id)?.name || 'Unknown'}</td>
+                        <td>{item.brand}</td>
+                        <td>{item.stockAmount}</td>
+                        <td><div className="sell-price-view">Rs.{item.sellPrice}</div></td>
+                        <td><div className="market-price-view">Rs.{item.marketPrice}</div></td>
                         <td>
                           <div className="items-actions-dropdown">
                             <button className="items-action-button">⋮</button>
@@ -572,11 +753,14 @@ const filteredBrands = brands.filter(brand =>
                           </div>
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
+          </div>
+          
+          
           )}
 
           {viewMode === "categories" && (
