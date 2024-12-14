@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema; // Add this line
 use Illuminate\Support\ServiceProvider;
+use App\Events\VariantCreated;
+use App\Listeners\UpdateVariantAttributes;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        
     }
 }

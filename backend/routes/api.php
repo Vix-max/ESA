@@ -14,6 +14,9 @@ Route::post('/admin/logout', [AuthController::class, 'adminLogout']);
 Route::get('/getallcategories', [CategoryController::class, 'index']); // Fetching categories can be public
 Route::get('/getallbrands', [BrandController::class, 'getAllBrands']);
 Route::get('/getallitems', [ItemController::class, 'index']);
+Route::get('/getitemdetails/{itemId}/{variantId}', [ItemController::class, 'show']);
+
+
 
 
 

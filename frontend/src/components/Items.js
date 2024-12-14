@@ -262,6 +262,8 @@ const handleAddBrand = () => {
 
       if (data.success) {
         toast.success('Item added successfully!');
+        // Optionally, you can refresh the items list here if required
+        // fetchItems();
       } else {
         toast.error('Failed to add item!');
       }
@@ -271,37 +273,42 @@ const handleAddBrand = () => {
     }
   };
 
-  
-
-// Filter items based on search, category, and brand
-    useEffect(() => {
-      const filtered = allItems.filter((item) => {
-        // Ensure you're comparing category IDs or a specific property
-        const matchesCategory =
-          selectedFilterCategory === "all" || categories.find(category => category.id === item.category_id)?.name === selectedFilterCategory;
+  useEffect(() => {
+    const filtered = allItems.flatMap((item) =>
+      item.variants
+        .filter((variant) => {
+          // Exclude the `variant_id` from the attributes when combining them into a string
+          const variantAttributes = Object.entries(variant.attributes || {})
+            .filter(([key]) => key !== "variant_id") // Ignore the `variant_id`
+            .map(([_, value]) => value)
+            .join(' ')
+            .toLowerCase();
           
-
-        const matchesBrand =
-        selecteFilterdBrand === "all" || item.brand === selecteFilterdBrand;
-
-        const matchesSearch =
-        searchItem === "" || 
-        item.variants.some(variant => {
-          // Combine variant attributes into a searchable string
-          const variantAttributes = Object.values(variant.attributes || {}).join(' ');
-          const searchableString = `${variantAttributes} ${item.name}`;
-          return searchableString.toLowerCase().includes(searchItem.toLowerCase());
-        });
-        
-
-
-
-        return matchesCategory && matchesBrand && matchesSearch;
-      });
-
-      // Flatten variants into separate rows
-      const itemsWithVariants = filtered.flatMap((item) =>
-        item.variants.map((variant, index) => ({
+          // Convert item name and search query to lowercase for case-insensitive comparison
+          const itemName = item.name.toLowerCase();
+          const searchQuery = searchItem.toLowerCase();
+  
+          console.log("Search query: ", searchQuery);
+          console.log("Combined query: ", `${variantAttributes} ${itemName}`);
+  
+          // Concatenate item name and variant attributes for comparison
+          const combinedAttributes = `${variantAttributes} ${itemName} `;
+  
+          // Check if the search query matches the combined string
+          const matchesSearch =
+            searchItem === "" || combinedAttributes.includes(searchQuery);
+  
+          // Ensure the variant matches the selected category and brand
+          const matchesCategory =
+            selectedFilterCategory === "all" ||
+            categories.find((category) => category.id === item.category_id)?.name === selectedFilterCategory;
+  
+          const matchesBrand =
+            selecteFilterdBrand === "all" || item.brand === selecteFilterdBrand;
+  
+          return matchesSearch && matchesCategory && matchesBrand;
+        })
+        .map((variant, index) => ({
           ...item,
           variantIndex: index + 1,
           attributes: variant.attributes,
@@ -309,12 +316,12 @@ const handleAddBrand = () => {
           marketPrice: variant.market_price,
           stockAmount: variant.stock_amount,
         }))
-      );
-
-      setDisplayedItems(itemsWithVariants);
-    }, [searchItem, selectedFilterCategory, selecteFilterdBrand, allItems]);
-
-
+    );
+  
+    setDisplayedItems(filtered);
+  }, [searchItem, selectedFilterCategory, selecteFilterdBrand, allItems]);
+  
+  
   
   
 
@@ -613,7 +620,7 @@ const filteredBrands = brands.filter(brand =>
       ) : (
         <div>
            <div className="items-header">
-            <h1>Items</h1>
+            <h1>Item List</h1>
             <div className="items-actions">
               <button
                 className="items-category-button"
@@ -725,17 +732,25 @@ const filteredBrands = brands.filter(brand =>
                 </thead>
                 <tbody>
                   {displayedItems.map((item, index) => {
-                    // Combine the attributes with the item name dynamically
+                    const variantId = item.attributes && item.attributes.variant_id
+                    ? item.attributes.variant_id
+                    : "No Variant";
+                    
                     const itemAttributes = item.attributes
-                      ? Object.values(item.attributes).join(' ') // Combine attribute values with space
-                      : '';
+                    ? Object.entries(item.attributes)
+                        .filter(([key, value]) => key !== 'variant_id') // Exclude 'variant_id' from the attributes
+                        .map(([key, value]) => value) // Get only the values
+                        .join(' ') // Combine attribute values with space
+                    : '';
+
           
                     const itemNameWithAttributes = `${itemAttributes} ${item.name}`.trim(); // Combine and trim any extra spaces
           
                     return (
+                      
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{item.variantId}</td>
+                        <td>{variantId}</td>
                         <td><strong>{itemNameWithAttributes}</strong></td> {/* Display combined name */}
                         <td>{categories.find(category => category.id === item.category_id)?.name || 'Unknown'}</td>
                         <td>{item.brand}</td>
@@ -757,6 +772,11 @@ const filteredBrands = brands.filter(brand =>
                   })}
                 </tbody>
               </table>
+              <div className="items-pagination">
+          <button><i className="fas fa-arrow-left"></i></button>
+          <span>1</span>
+          <button><i className="fas fa-arrow-right"></i></button>
+        </div>
             </div>
           </div>
           

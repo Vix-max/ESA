@@ -11,6 +11,7 @@ import Invoices from './components/Invoices';
 import Analytics from './components/Analytics'; 
 import Customers from './components/Customers'; 
 import Users from './components/Users';
+import ItemDetails from './components/ItemDetails'; // The new component for displaying item details
 
 function App() {
   return (
@@ -30,6 +31,9 @@ function App() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="customers" element={<Customers />} />
             <Route path="users" element={<Users />} />
+            <Route path="item/:itemId/:variantId" element={<ItemDetails />} />
+
+
           </Route>
 
         </Routes>
