@@ -7,6 +7,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\StockController;
+
+
+
 
 // Public Routes
 Route::post('/admin/login', [AuthController::class, 'adminLogin']);
@@ -15,11 +19,7 @@ Route::get('/getallcategories', [CategoryController::class, 'index']); // Fetchi
 Route::get('/getallbrands', [BrandController::class, 'getAllBrands']);
 Route::get('/getallitems', [ItemController::class, 'index']);
 Route::get('/getitemdetails/{itemId}/{variantId}', [ItemController::class, 'show']);
-
-
-
-
-
+Route::get('/stocks/item/{id}', [StockController::class, 'getStocksByItem']);
 
 
 
@@ -30,6 +30,8 @@ Route::middleware([VerifyAuthToken::class])->group(function () {
     Route::delete('/deletecategories/{id}', [CategoryController::class, 'destroy']);
     Route::post('/additems', [ItemController::class, 'store']);  // Now protected
     Route::post('/addbrand', [BrandController::class, 'addBrand']);
+    Route::post('/additemstock', [StockController::class, 'store']);
+
 });
 
 

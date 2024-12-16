@@ -39,6 +39,9 @@
   .stock-add-button i {
     padding-right: 5px;
   }
+
+
+
   
 
   .stock-table-content {
@@ -222,4 +225,224 @@ font-size: 0.8rem;
     margin: 0 5px;
     font-size: 16px;
   }
+
+  /*Stock Item Details Styels*/
+  .item-stock-details{
+    font-family: Nunito;
+    padding: 5px 20px 20px 20px;
+    background-color: white;
+    border-radius: 20px;
+  }
+
+  .item-details-header{
+    align-items:center;
+    justify-content: space-between;
+    display: flex;
+  }
+  
+  .item-stock-details h2{
+    text-align: left;
+    font-weight:800;
+    margin-bottom: 0px;
+  }
+
+  .item-stock-details h3{
+    text-align: left;
+    margin-top: 5px;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+
+  .item-stock-add-button {
+    font-family: Nunito;
+    font-weight: 600;
+    padding: 5px 8px;
+    height: fit-content;
+    width: fit-content;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    background-color: #456EFE;
+    color: white;
+  }
+  
+  .item-stock-add-button:hover {
+    background-color: #3d60de;
+  }
+
+
+.items-stock-details-table {
+  font-family: Nunito;
+  padding: 5px 20px 20px 20px;
+  background-color: white;
+  border-radius: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+  
+  .items-stock-details-table th, .items-stock-details-table td {
+    color: #333333;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1.5px solid #e4e4e4;
+  }
+
+  .stock-date-range-search{
+    text-align: left;
+    font-family: nunito;
+
+  }
+
+  .stock-date-range-search label{
+    margin-right: 5px;
+    margin-left: 15px;
+    
+  }
+
+  .stock-date-range-search input{
+    font-family: nunito;
+    border: 0px;
+    background-color: rgb(235, 235, 235);
+    padding: 7px;
+    border-radius: 7px;
+    
+  }
+
+  .stock-back-div{
+  display: flex;
+  flex-direction: column; /* Ensures child elements stack vertically */
+  align-items: flex-start; /* Aligns children to the left */
+}
+  .stock-item-back-button {
+    font-family: Nunito;
+    font-weight: 600;
+    margin: 10px 0 0 15px; /* Adjust margins for better alignment */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    display: inline-block; /* Ensures it behaves as a block-level element */
+    text-align: left; /* Aligns text inside the button */
+    align-items: center;
+    
+  }
+
+  .stock-item-back-button {
+    font-family: Nunito;
+    font-weight: 600;
+    margin: 10px 0 0 15px; /* Adjust margins for better alignment */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    display: inline-block; /* Ensures it behaves as a block-level element */
+    text-align: left; /* Aligns text inside the button */
+    align-items: center;
+  }
+  
+  .stock-item-back-button:hover{
+    background-color: rgb(227, 227, 227);
+  }
+
+
+  .stock-item-back-button i{
+    margin-right: 5px;
+  }
+
+  /*Add item stock form styles*/
+  .add-item-stock-form {
+    width: 100%;
+  }  
+
+  .add-item-stock-form h2 {
+      text-align: left;
+      font-family: Nunito, sans-serif;
+      font-size: 1.6em;
+      font-weight: 800;
+      color: #333333;
+      margin-bottom: 0px;
+      margin-top: 10px;
+  }
+
+  .add-item-stock-form p{
+    text-align: left;
+    font-family: Nunito, sans-serif;
+    font-size: 0.9em;
+    margin-top: 0px;
+    color: #979494;
+    font-weight: 700;
+    margin-bottom: 20px;
+    }
+
+    .stock-item-input-group{
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    
+
+  .add-item-stock-form input{
+    box-sizing: border-box;
+    font-family: Nunito, sans-serif;
+    padding: 10px;
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    outline: none;
+  }
+  .add-item-stock-form label{
+    text-align: left;
+    font-family: Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555555;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .add-item-stock-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+
+  .add-item-stock-button{
+    text-align: left;
+    color: white;
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    background-color: #456efe;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .cancel-item-stock-button:hover {
+    background-color: #e2e2e2;
+}
+  .cancel-item-stock-button{
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .add-item-stock-button:hover {
+    background-color: #3d60de;
+}
+  
+
+
+
+ 
   
