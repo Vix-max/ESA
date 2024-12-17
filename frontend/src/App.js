@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 
 import AdminLogin from './pages/AdminLogin';
+import StockBillEntry from './pages/StockBillEntry';
 import AdminDashboard from './pages/AdminDashboard';
 import Dashboard from './components/Dashboard'; 
 import Items from './components/Items'; 
@@ -30,8 +31,7 @@ function App() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="customers" element={<Customers />} />
             <Route path="users" element={<Users />} />
-
-
+            <Route path="stock-bill-entry" element={<StockBillEntry />} />
           </Route>
           
 

@@ -19,7 +19,9 @@ Route::get('/getallcategories', [CategoryController::class, 'index']); // Fetchi
 Route::get('/getallbrands', [BrandController::class, 'getAllBrands']);
 Route::get('/getallitems', [ItemController::class, 'index']);
 Route::get('/getitemdetails/{itemId}/{variantId}', [ItemController::class, 'show']);
-Route::get('/stocks/item/{id}', [StockController::class, 'getStocksByItem']);
+Route::get('/items/{itemId}/variants/{variantId}/stocks', [StockController::class, 'getStockDetails']);
+
+//Route::get('/itemstock/{id}', [StockController::class, 'getStocksByItem']);
 
 
 

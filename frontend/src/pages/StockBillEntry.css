@@ -1,0 +1,138 @@
+.stock-bill-entry{
+    font-family: Arial, sans-serif;
+    background-color: #eeeef0;
+    padding: 0px 20px;
+}
+
+.stock-bill-header h1{
+    text-align: left;
+    font-family: Nunito, sans-serif;
+    font-size: 1.8em;
+    font-weight: 800;
+    color: #333333;
+    margin-bottom: 0px;
+}
+
+.stock-bill-header p{
+    text-align: left;
+    font-family: Nunito, sans-serif;
+    font-size: 0.9em;
+    margin-top: 0px;
+    color: #979494;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.stock-bill-entry-form{
+    text-align: left;
+    background-color: #ffffff;
+    padding: 30px 20px;
+    border-radius: 10px;
+    margin: 30px auto;
+    font-family: Nunito, sans-serif;
+}
+
+.stock-entry-table{
+    width: 100%;
+}
+
+.stock-bill-entry-form input{
+    box-sizing: border-box;
+    font-family: Nunito, sans-serif;
+    width: 98%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.stock-bill-entry-form th{
+    font-family: Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555555;
+    margin-bottom: 5px;
+}
+
+.stock-bill-entry-actions{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+
+.bill-add-remove-items button {
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    margin: 10px 10px 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.bill-add-item-button{
+    background-color: rgb(56, 186, 44);
+    color: white;
+  }
+  
+  .bill-add-item-button:hover{
+    background-color: rgb(43, 145, 33);
+    color: white;
+  }
+  
+  .bill-remove-item-button{
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    margin: 10px 10px 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgb(186, 44, 44);
+    color: white;
+  }
+  
+  .bill-remove-item-button:hover{
+    background-color: rgb(145, 33, 33);
+  }
+  
+  .bill-stock-actions{
+    font-family: Nunito, sans-serif;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .bill-stock-submit{
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #456efe;
+    color: white;
+  }
+
+  .bill-stock-submit:hover{
+    background-color: #3d60de;
+  }
+
+  .bill-stock-back{
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .bill-stock-back:hover {
+    background-color: #e6e6e6;
+  }

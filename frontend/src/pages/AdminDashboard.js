@@ -4,6 +4,7 @@ import './AdminDashboard.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate, NavLink, Route, Routes } from 'react-router-dom'; // Import necessary components
 import Dashboard from '../components/Dashboard'; 
+import StockBillEntry from './StockBillEntry';
 import Invoices from '../components/Invoices';
 import Stock from '../components/Stock'; 
 import Items from '../components/Items'; 
@@ -72,11 +73,19 @@ const AdminDashboard = () => {
     </NavLink>
   </li>
   <li>
-    <NavLink to="/admin-dashboard/stock" className="menu-item" activeClassName="active">
-      <div className="menu-link">
-        <i className="fas fa-warehouse"></i> Stock
-      </div>
-    </NavLink>
+  <NavLink
+  to="/admin-dashboard/stock"
+  className={({ isActive }) =>
+    isActive || window.location.pathname.includes("stock-bill-entry")
+      ? "menu-item active"
+      : "menu-item"
+  }
+>
+  <div className="menu-link">
+    <i className="fas fa-warehouse"></i> Stock
+  </div>
+</NavLink>
+
   </li>
   <li>
     <NavLink to="/admin-dashboard/items" className="menu-item" activeClassName="active">
@@ -141,6 +150,7 @@ const AdminDashboard = () => {
           <Route path="analytics" element={<Analytics />} />
           <Route path="customers" element={<Customers />} />
           <Route path="users" element={<Users />} />
+           <Route path="stock-bill-entry" element={<StockBillEntry />} />
         </Routes>
       </div>
       <ToastContainer />

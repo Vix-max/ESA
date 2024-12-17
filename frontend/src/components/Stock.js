@@ -16,33 +16,56 @@ export default function Stock() {
   const [itemDetails, setItemDetails] = useState(null);  // New state for item details view
   const [variantDetails, setVariantDetails] = useState(null);
   const [isAddingStock, setIsAddingStock] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [stockDetails, setStockDetails] = useState([]); // Holds stock details
+
 
 
   const navigate = useNavigate();
 
+  const fetchStockDetails = async (itemId, variantId) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`http://localhost:8000/api/items/${itemId}/variants/${variantId}/stocks`);
+      const data = await response.json();
+  
+      if (data.success) {
+       
+        setStockDetails(data.stocks); // Add stock details to state
+        
+      } else {
+        console.error('Failed to fetch stock details:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching stock details:', error);
+    }  finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Call fetchStockDetails when the viewItemDetails function runs
   const viewItemDetails = (item) => {
-    const variantId = item.attributes && item.attributes.variant_id
-      ? item.attributes.variant_id
-      : "No Variant";
+    const variantId = item.attributes?.variant_id || "No Variant";
   
     const itemAttributes = item.attributes
       ? Object.entries(item.attributes)
-          .filter(([key, value]) => key !== 'variant_id')
+          .filter(([key]) => key !== 'variant_id')
           .map(([key, value]) => value)
           .join(' ')
       : '';
   
     const itemNameWithAttributes = `${itemAttributes} ${item.name}`.trim();
-  
-    // Set item and variant details to state
+    console.log("Stock data: ", variantId);
     setItemDetails({
       ...item,
       variantId,
-      nameWithAttributes: itemNameWithAttributes, // Add itemNameWithAttributes here
+      nameWithAttributes: itemNameWithAttributes,
     });
   
-    setVariantDetails(item.variants.find(variant => variant.attributes.variant_id === variantId)); // Set variant details
+    // Fetch stock details for the selected item and variant
+    fetchStockDetails(item.id, variantId);
   };
+  
   
 
 
@@ -50,13 +73,17 @@ export default function Stock() {
         // Fetch items from the server
         const fetchItems = async () => {
           try {
+            setIsLoading(true); // Start loading
             const response = await fetch("http://localhost:8000/api/getallitems");
             const data = await response.json();
             setAllItems(data.items); 
             setDisplayedItems(data.items);
           } catch (error) {
             console.error("Error fetching items:", error);
+          } finally {
+            setIsLoading(false); // End loading
           }
+          
         };
   
         fetchItems();
@@ -115,6 +142,7 @@ export default function Stock() {
           attributes: variant.attributes,
           sellPrice: variant.sell_price,
           marketPrice: variant.market_price,
+          averageCost: variant.average_cost,
           stockAmount: variant.stock_amount,
         }))
     );
@@ -129,14 +157,13 @@ export default function Stock() {
 
     const stockData = {
         item_id: itemDetails.id,
-        variant_id: variantDetails.id,
+        variant_id: itemDetails.variantId,
         stock_date	: e.target["add-item-stock-date"].value,
         seller: e.target["add-item-stock-seller"].value,
         buy_price: parseFloat(e.target["add-item-stock-price"].value),
         quantity: parseInt(e.target["add-item-stock-quantity"].value),
     };
 
-    console.log("TEst DAta: ", stockData)
 
     try {
         const response = await fetch("http://localhost:8000/api/additemstock", {
@@ -151,6 +178,7 @@ export default function Stock() {
         if (response.ok) {
             const data = await response.json();
              toast.success('Stock added successfully!');
+             fetchStockDetails(itemDetails.id, itemDetails.variantId);
             setIsAddingStock(false);
             // Update stock data here if needed
         } else {
@@ -210,58 +238,56 @@ export default function Stock() {
               // Existing stock details
               <div className="item-stock-details-table">
                 <div className="item-details-header">
-                        <h2>{itemDetails.brand} {itemDetails.nameWithAttributes} Stock</h2>
-                        
-                        <button className="item-stock-add-button" onClick={() => setIsAddingStock(true)}>
-                          <i className="icon fas fa-plus-circle"></i>
-                          </button>
+                  <h2>
+                    {itemDetails.brand} {itemDetails.nameWithAttributes} Stock
+                  </h2>
+                  <button
+                    className="item-stock-add-button"
+                    onClick={() => setIsAddingStock(true)}
+                  >
+                    <i className="icon fas fa-plus-circle"></i>
+                  </button>
+                </div>
+                <h3>
+                  Total Available Stock: <strong>{itemDetails.variant?.stock_amount}</strong>
+                </h3>
+                {isLoading ? (
+                    <div className="loading-spinner">Loading...</div>
+                  ) : (
+                <table className="items-stock-details-table">
+                  <thead>
+                    <tr>
+                      <th>Stock ID</th>
+                      <th>Stock Added Date</th>
+                      <th>Stock Seller</th>
+                      <th>Stock Buy Price</th>
+                      <th>Available Stock Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stockDetails.map((stock) => (
+                      <tr key={stock.id}>
+                        <td>{stock.id}</td>
+                        <td>{stock.stock_date}</td>
+                        <td>{stock.seller || "N/A"}</td>
+                        <td>Rs. {stock.buy_price}</td>
+                        <td>{stock.quantity}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                )}
 
-                      </div>
-                      <h3>Total Available Stock: <strong>{itemDetails.stockAmount}</strong></h3>
-                    
-                      <div className="stock-date-range-search">
-                        <label for="start-date">Start Date:</label>
-                        <input
-                          type="date"
-                          id="start-date"
-                          name="start-date"
-                        />
-
-                        <label for="end-date">End Date:</label>
-                        <input
-                          type="date"
-                          id="end-date"
-                          name="end-date"
-                        />
-                      </div>
-                    
-                      <table className="items-stock-details-table">
-                        <thead>
-                          <tr>
-                            <th>Stock ID</th>
-                            <th>Stock Added Date</th>
-                            <th>Stock Seller</th>
-                            <th>Stock Buy Price</th>
-                            <th>Added Stock Quantity</th>
-                            <th>Available Stock Quantity</th>
-                          </tr>
-                        </thead>
-                        <tbody id="stock-table-body">
-                          <tr>
-                            <td>1</td>
-                            <td>14-03-2024</td>
-                            <td>Test Stores</td>
-                            <td>Rs. 300</td>
-                            <td>30</td>
-                            <td>12</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    
-                      <div className="stock-back-div">
-                        <button className="stock-item-back-button" onClick={() => setItemDetails(null)}><i className="fas fa-arrow-left"></i>   Back to Stock List</button>
-                        </div>
+                <div className="stock-back-div">
+                  <button
+                    className="stock-item-back-button"
+                    onClick={() => setItemDetails(null)}
+                  >
+                    <i className="fas fa-arrow-left"></i> Back to Stock List
+                  </button>
+                </div>
               </div>
+
             )}
            
          </div>
@@ -273,9 +299,13 @@ export default function Stock() {
                   <h1>Stock List</h1>
                   <div className="stock-actions">
                   
-                    <button className="stock-add-button">
-                      <i className="icon fas fa-plus-circle"></i> Stock Entry (Bill)
-                    </button>
+                  <button 
+                    className="stock-add-button" 
+                    onClick={() => navigate('/admin-dashboard/stock-bill-entry')}
+                  >
+                    <i className="icon fas fa-plus-circle"></i> Stock Entry (Bill)
+                  </button>
+
                     
                   </div>
                 </div>
@@ -339,6 +369,9 @@ export default function Stock() {
               </div>
             </div>
 
+            {isLoading ? (
+                    <div className="loading-spinner">Loading...</div>
+                  ) : (       
             <table className="stock-table">
               <thead>
                 <tr>
@@ -346,6 +379,7 @@ export default function Stock() {
                   <th>Category</th>
                   <th>Brand</th>
                   <th>Item Name</th>
+                  <th>Average Cost</th>
                   <th>Total Stock Quantity</th>
                   <th>Actions</th>
                 </tr>
@@ -371,6 +405,7 @@ export default function Stock() {
                       <td>{categories.find(category => category.id === item.category_id)?.name || 'Unknown'}</td>
                       <td>{item.brand}</td>
                       <td><strong>{itemNameWithAttributes}</strong></td>
+                      <td><div className="stock-average-cost">Rs {item.averageCost}</div></td>
                       <td>
                         <div
                           className="stock-quantity-view"
@@ -392,6 +427,7 @@ export default function Stock() {
                           {item.stockAmount}
                         </div>
                       </td>
+                      
                       <td>
                         <button className="stock-view-button" onClick={() => viewItemDetails(item)}>View</button>
                       </td>
@@ -400,6 +436,7 @@ export default function Stock() {
                 })}
               </tbody>
             </table>
+                  )}
           </div>
           </div>
         )}

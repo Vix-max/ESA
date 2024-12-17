@@ -23,6 +23,7 @@ export default function Items() {
   const [itemName, setItemName] = useState("");
   const [allItems, setAllItems] = useState([]); // All items fetched from the server
   const [displayedItems, setDisplayedItems] = useState([]); // Filtered items for 
+  const [isLoading, setIsLoading] = useState(false);
 
 
 
@@ -61,13 +62,17 @@ const handlePriceChange = (e, index, type) => {
       // Fetch items from the server
       const fetchItems = async () => {
         try {
+          setIsLoading(true);
           const response = await fetch("http://localhost:8000/api/getallitems");
           const data = await response.json();
           setAllItems(data.items); // Assuming `data.items` contains the list of items with variants
           setDisplayedItems(data.items); // Initially display all items
+          console.log("All Items: ", data.items);
           
         } catch (error) {
           console.error("Error fetching items:", error);
+        } finally {
+          setIsLoading(false);
         }
       };
 
@@ -288,8 +293,6 @@ const handleAddBrand = () => {
           const itemName = item.name.toLowerCase();
           const searchQuery = searchItem.toLowerCase();
   
-          console.log("Search query: ", searchQuery);
-          console.log("Combined query: ", `${variantAttributes} ${itemName}`);
   
           // Concatenate item name and variant attributes for comparison
           const combinedAttributes = `${variantAttributes} ${itemName} `;
@@ -314,6 +317,7 @@ const handleAddBrand = () => {
           attributes: variant.attributes,
           sellPrice: variant.sell_price,
           marketPrice: variant.market_price,
+          averageCost: variant.average_cost,
           stockAmount: variant.stock_amount,
         }))
     );
@@ -715,7 +719,9 @@ const filteredBrands = brands.filter(brand =>
                   <span>entries</span>
                 </div>
               </div>
-              
+              {isLoading ? (
+                    <div className="loading-spinner">Loading...</div>
+                  ) : (  
               <table className="items-table">
                 <thead>
                   <tr>
@@ -727,6 +733,7 @@ const filteredBrands = brands.filter(brand =>
                     <th>Stock Quantity</th>
                     <th>Sell Price</th>
                     <th>Market Price</th>
+                    <th>Average Cost</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -755,8 +762,9 @@ const filteredBrands = brands.filter(brand =>
                         <td>{categories.find(category => category.id === item.category_id)?.name || 'Unknown'}</td>
                         <td>{item.brand}</td>
                         <td>{item.stockAmount}</td>
-                        <td><div className="sell-price-view">Rs.{item.sellPrice}</div></td>
-                        <td><div className="market-price-view">Rs.{item.marketPrice}</div></td>
+                        <td><div className="sell-price-view">Rs {item.sellPrice}</div></td>
+                        <td><div className="market-price-view">Rs {item.marketPrice}</div></td>
+                        <td><div className="cost-price-view">Rs {item.averageCost}</div></td>
                         <td>
                           <div className="items-actions-dropdown">
                             <button className="items-action-button">⋮</button>
@@ -772,6 +780,7 @@ const filteredBrands = brands.filter(brand =>
                   })}
                 </tbody>
               </table>
+                  )}
               <div className="items-pagination">
           <button><i className="fas fa-arrow-left"></i></button>
           <span>1</span>

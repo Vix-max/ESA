@@ -310,6 +310,7 @@
 .items-table th, .items-table td {
   
   font-family: nunito;
+  font-size: 15px;
   color: #333333;
   padding: 10px;
   text-align: center;
@@ -919,5 +920,13 @@
   font-weight: 800;
   color:#00b50f;
   background-color: #ddffdd;
+  padding: 7px;
+}
+
+.cost-price-view{
+  border-radius: 5px;
+  font-weight: 800;
+  color:#b5a300;
+  background-color: #fdffdd;
   padding: 7px;
 }

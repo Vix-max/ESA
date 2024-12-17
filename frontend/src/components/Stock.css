@@ -174,6 +174,17 @@
   display: block;
 }
 
+.stock-average-cost{
+  display: inline-block;
+  text-align: center;
+  width: fit-content;
+  border-radius: 5px;
+  font-weight: 800;
+  padding: 7px;
+  background-color: rgb(204, 210, 255);
+  color: rgb(0, 0, 153);
+}
+
 .stock-quantity-view {
   display: inline-block;
   text-align: center;
@@ -441,6 +452,13 @@ font-size: 0.8rem;
     background-color: #3d60de;
 }
   
+.loading-spinner {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 20px 0;
+  color: #555;
+}
+
 
 
 
