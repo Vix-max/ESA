@@ -15,7 +15,7 @@ class Item extends Model
 
     public function variants()
     {
-        return $this->hasMany(Variant::class);  // Relationship to variants
+        return $this->hasMany(Variant::class, 'item_id', 'id');
     }
 
     public function category()

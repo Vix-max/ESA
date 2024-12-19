@@ -36,6 +36,17 @@
     width: 100%;
 }
 
+.stock-bill-entry-form select{
+  box-sizing: border-box;
+  font-family: Nunito, sans-serif;
+  width: 98%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  outline: none;
+}
+
 .stock-bill-entry-form input{
     box-sizing: border-box;
     font-family: Nunito, sans-serif;
@@ -87,6 +98,7 @@
     font-family: Nunito, sans-serif;
     padding: 10px 20px;
     margin: 10px 10px 10px 0;
+    height: fit-content;
     font-size: 14px;
     font-weight: 600;
     border: none;

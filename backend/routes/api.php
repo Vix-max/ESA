@@ -20,6 +20,10 @@ Route::get('/getallbrands', [BrandController::class, 'getAllBrands']);
 Route::get('/getallitems', [ItemController::class, 'index']);
 Route::get('/getitemdetails/{itemId}/{variantId}', [ItemController::class, 'show']);
 Route::get('/items/{itemId}/variants/{variantId}/stocks', [StockController::class, 'getStockDetails']);
+Route::get('/items/{category_id}/{brand}', [ItemController::class, 'getByCategoryAndBrand']);
+Route::get('/getvariantsbyitemID/{itemId}', [ItemController::class, 'getVariantsByItemId']);
+
+
 
 //Route::get('/itemstock/{id}', [StockController::class, 'getStocksByItem']);
 
@@ -33,6 +37,7 @@ Route::middleware([VerifyAuthToken::class])->group(function () {
     Route::post('/additems', [ItemController::class, 'store']);  // Now protected
     Route::post('/addbrand', [BrandController::class, 'addBrand']);
     Route::post('/additemstock', [StockController::class, 'store']);
+    Route::post('/addmultiplestock', [StockController::class, 'storeMultiple']);
 
 });
 

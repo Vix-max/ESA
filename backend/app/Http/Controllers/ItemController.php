@@ -86,11 +86,68 @@ class ItemController extends Controller
     }
 
     public function show($itemId, $variantId)
+    {
+        // Fetch the item by its ID
+        $item = Item::find($itemId);
+
+        // Check if the item exists
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item not found!',
+            ], 404);
+        }
+
+        // Find the specific variant using a where clause
+        $variant = $item->variants()->where('id', $variantId)->first();
+
+        // Check if the variant exists
+        if (!$variant) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Variant not found!',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'item' => $item,
+            'variant' => $variant,
+        ]);
+    }
+
+    public function getByCategoryAndBrand(Request $request, $category_id, $brand)
+    {
+        \Log::info("Fetching items for category: $category_id and brand: $brand");
+
+        $items = Item::where('category_id', $category_id)
+            ->where('brand', $brand)
+            ->with('variants')
+            ->get();
+
+        if ($items->isEmpty()) {
+            \Log::info("No items found for category: $category_id and brand: $brand");
+            return response()->json([
+                'success' => false,
+                'message' => 'No items found for the specified category and brand.',
+            ], 404);
+        }
+
+        \Log::info("Items found: ", $items->toArray());
+        return response()->json([
+            'success' => true,
+            'items' => $items,
+        ]);
+    }
+
+    //get variants by itemID
+    public function getVariantsByItemId($itemId)
 {
-    // Fetch the item by its ID
+    \Log::info("Fetching variants for item_id: $itemId");
+
+    // Check if the item exists first
     $item = Item::find($itemId);
 
-    // Check if the item exists
     if (!$item) {
         return response()->json([
             'success' => false,
@@ -98,21 +155,21 @@ class ItemController extends Controller
         ], 404);
     }
 
-    // Find the specific variant using a where clause
-    $variant = $item->variants()->where('id', $variantId)->first();
+    // Now fetch variants for the item
+    $variants = $item->variants; // Using the relationship defined in the Item model
 
-    // Check if the variant exists
-    if (!$variant) {
+    \Log::info("Variants fetched: ", $variants->toArray());
+
+    if ($variants->isEmpty()) {
         return response()->json([
             'success' => false,
-            'message' => 'Variant not found!',
+            'message' => 'No variants found for this item!',
         ], 404);
     }
 
     return response()->json([
         'success' => true,
-        'item' => $item,
-        'variant' => $variant,
+        'variants' => $variants,
     ]);
 }
 

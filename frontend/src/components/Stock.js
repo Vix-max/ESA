@@ -177,8 +177,8 @@ export default function Stock() {
 
         if (response.ok) {
             const data = await response.json();
-             toast.success('Stock added successfully!');
-             fetchStockDetails(itemDetails.id, itemDetails.variantId);
+            toast.success('Stock added successfully!');
+            fetchStockDetails(itemDetails.id, itemDetails.variantId);
             setIsAddingStock(false);
             // Update stock data here if needed
         } else {
@@ -249,7 +249,7 @@ export default function Stock() {
                   </button>
                 </div>
                 <h3>
-                  Total Available Stock: <strong>{itemDetails.variant?.stock_amount}</strong>
+                  Total Available Stock: <strong>{itemDetails.stockAmount}</strong>
                 </h3>
                 {isLoading ? (
                     <div className="loading-spinner">Loading...</div>
