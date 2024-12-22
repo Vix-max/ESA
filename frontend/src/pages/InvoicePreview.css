@@ -1,0 +1,78 @@
+.invoice-preview {
+  max-width: 800px;
+  margin: 20px auto;
+  font-family: "Nunito", sans-serif;
+  color: #333;
+  background-color: #f7f9fc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.invoice-header {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.invoice-header h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.invoice-more-info{
+  text-align: left;
+
+}
+
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.invoice-table th, .invoice-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.invoice-table th {
+  background-color: #456efe;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.invoice-table td {
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.invoice-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+}
+
+.download-btn {
+  text-align: left;
+  display: block;
+  width: 100%;
+  max-width: 250px;
+  padding: 10px 20px;
+  background-color: #456efe;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  font-family: "Nunito", sans-serif;
+}
+
+.download-btn:hover {
+  background-color: #3a58c8;
+}
+

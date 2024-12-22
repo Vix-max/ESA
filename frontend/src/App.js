@@ -5,6 +5,8 @@ import 'font-awesome/css/font-awesome.min.css';
 import AdminLogin from './pages/AdminLogin';
 import StockBillEntry from './pages/StockBillEntry';
 import AdminDashboard from './pages/AdminDashboard';
+import AddInvoice from './pages/AddInvoice';
+import InvoicePreview from './pages/InvoicePreview';
 import Dashboard from './components/Dashboard'; 
 import Items from './components/Items'; 
 import Stock from './components/Stock'; 
@@ -20,6 +22,7 @@ function App() {
         <Routes>
           {/* Route for admin login */}
           <Route path="/admin-login" element={<AdminLogin />} />
+          
 
           {/* Route for admin dashboard */}
           <Route path="/admin-dashboard" element={<AdminDashboard />}>
@@ -33,6 +36,9 @@ function App() {
             <Route path="users" element={<Users />} />
             <Route path="stock-bill-entry" element={<StockBillEntry />} />
           </Route>
+
+          <Route path="/addinvoice" element={<AddInvoice />} />
+          <Route path="/invoice-preview" element={<InvoicePreview />} />
           
 
         </Routes>

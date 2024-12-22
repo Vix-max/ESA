@@ -8,7 +8,13 @@ export default function Invoices() {
         <h1>Invoice List</h1>
         <div className="actions">
           <button className="export-button"><i class="fas fa-file-export"></i> Export</button>
-          <button className="add-button"><i className="icon fas fa-file-invoice"></i> Add Purchase</button>
+          <button 
+            className="add-button" 
+            onClick={() => window.open('/addinvoice', '_blank')}
+          >
+            <i className="fas fa-file-invoice"></i> Add Invoice
+          </button>
+
         </div>
       </div>
       

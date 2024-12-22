@@ -67,7 +67,6 @@ const handlePriceChange = (e, index, type) => {
           const data = await response.json();
           setAllItems(data.items); // Assuming `data.items` contains the list of items with variants
           setDisplayedItems(data.items); // Initially display all items
-          console.log("All Items: ", data.items);
           
         } catch (error) {
           console.error("Error fetching items:", error);
@@ -231,22 +230,28 @@ const handleAddBrand = () => {
       });
 };
 
+const generateVariantName = (attributes, baseName) => {
+  const attributeValues = Object.values(attributes).filter((value) => value); // Get attribute values
+  return `${attributeValues.join(' ')} ${baseName}`; // Concatenate attributes with item name
+};
+
+
   //Add items
   const handleSaveItem = async () => {
     const itemData = {
       name: itemName,
       category_id: selectedCategory,
       brand: selectedBrand,
-      variants: variants.map(variant => ({
+      variants: variants.map((variant) => ({
         attributes: variant.attributes,
+        item_name: generateVariantName(variant.attributes, itemName), // Generate structured item name
         sell_price: variant.sellPrice,
         market_price: variant.marketPrice,
       })),
     };
-
-
-
+  
     try {
+      console.log("Item Data: ", itemData)
       const response = await fetch('http://localhost:8000/api/additems', {
         method: 'POST',
         headers: {
@@ -256,15 +261,14 @@ const handleAddBrand = () => {
         body: JSON.stringify(itemData),
       });
       const data = await response.json();
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         toast.error(`Validation Error: ${errorData.message}`);
         console.error('Validation Errors:', errorData.errors);
         return;
       }
-      
-
+  
       if (data.success) {
         toast.success('Item added successfully!');
         // Optionally, you can refresh the items list here if required
@@ -277,6 +281,7 @@ const handleAddBrand = () => {
       console.error('Error saving item:', error);
     }
   };
+  
 
   useEffect(() => {
     const filtered = allItems.flatMap((item) =>
@@ -319,6 +324,7 @@ const handleAddBrand = () => {
           marketPrice: variant.market_price,
           averageCost: variant.average_cost,
           stockAmount: variant.stock_amount,
+          itemName:variant.item_name,
         }))
     );
   
@@ -758,7 +764,7 @@ const filteredBrands = brands.filter(brand =>
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>{variantId}</td>
-                        <td><strong>{itemNameWithAttributes}</strong></td> {/* Display combined name */}
+                        <td><strong>{item.itemName}</strong></td> {/* Display combined name */}
                         <td>{categories.find(category => category.id === item.category_id)?.name || 'Unknown'}</td>
                         <td>{item.brand}</td>
                         <td>{item.stockAmount}</td>

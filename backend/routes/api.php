@@ -20,8 +20,9 @@ Route::get('/getallbrands', [BrandController::class, 'getAllBrands']);
 Route::get('/getallitems', [ItemController::class, 'index']);
 Route::get('/getitemdetails/{itemId}/{variantId}', [ItemController::class, 'show']);
 Route::get('/items/{itemId}/variants/{variantId}/stocks', [StockController::class, 'getStockDetails']);
-Route::get('/items/{category_id}/{brand}', [ItemController::class, 'getByCategoryAndBrand']);
+Route::get('/items/{category_name}/{brand}', [ItemController::class, 'getByCategoryAndBrand']);
 Route::get('/getvariantsbyitemID/{itemId}', [ItemController::class, 'getVariantsByItemId']);
+Route::get('searchitems/{searchQuery}', [ItemController::class, 'searchItems']);
 
 
 

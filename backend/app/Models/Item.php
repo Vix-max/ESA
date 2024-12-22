@@ -11,7 +11,8 @@ class Item extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'category_id', 'brand'];
+    // Add 'category_name' to the fillable attributes
+    protected $fillable = ['name', 'category_id', 'category_name', 'brand'];
 
     public function variants()
     {

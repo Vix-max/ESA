@@ -101,7 +101,7 @@ const AdminDashboard = () => {
       </div>
     </NavLink>
   </li>
-  <li>
+  {/*<li>
     <NavLink to="/admin-dashboard/customers" className="menu-item" activeClassName="active">
       <div className="menu-link">
         <i className="fas fa-users"></i> Customers
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
         <i className="fas fa-user-friends"></i> Users
       </div>
     </NavLink>
-  </li>
+  </li>*/}
   <li>
   <NavLink 
     to="/admin-login" 

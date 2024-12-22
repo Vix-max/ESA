@@ -1,0 +1,325 @@
+.add-invoice-entry{
+    font-family: Arial, sans-serif;
+    background-color: #eeeef0;
+    padding: 20px 50px;
+}
+
+.add-invoice-header h1{
+    text-align: left;
+    font-family: Nunito, sans-serif;
+    font-size: 1.8em;
+    font-weight: 800;
+    color: #333333;
+    margin-bottom: 0px;
+}
+
+.add-invoice-header p{
+    text-align: left;
+    font-family: Nunito, sans-serif;
+    font-size: 0.9em;
+    margin-top: 0px;
+    color: #979494;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.add-invoice-entry-form{
+    text-align: left;
+    background-color: #ffffff;
+    padding: 30px 20px;
+    border-radius: 10px;
+    margin: 30px auto;
+    font-family: Nunito, sans-serif;
+}
+
+.add-invoice-entry-table{
+    width: 100%;
+}
+
+
+/*Search Styles*/
+/*.invoice-item-variant-search{
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+
+
+.invoice-item-variant-search input{
+    font-family: Nunito, sans-serif;
+    margin-top: 5px ;
+    margin-bottom: 15px ;
+}
+
+.invoice-search-variant-option{
+    width: 50%;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-add-search-item-button{
+    border: none;
+    margin-left: 10px;
+    margin-top: 10px;
+    color: white;
+    background-color: #456efe;
+    border-radius: 3px;
+}
+
+.invoice-add-search-item-button:hover{
+    background-color: #3d60de;
+}
+*/
+
+
+
+
+.invoice-add-header{
+  display: flex;
+}
+
+
+.invoice-item-variant-search {
+    position: relative;
+    max-width: 800px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+
+  .invoice-item-variant-search label{
+    font-family: Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555555;
+}
+  
+  .search-input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    font-size: 16px;
+    font-family: Nunito, sans-serif;
+    margin-bottom: 15px ;
+  }
+  
+  .search-input:focus {
+    border-color: #456efe;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  .invoice-add-customer-info{
+    position: relative;
+    max-width: 500px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+
+  .invoice-add-customer-info label{
+    font-family: Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555555;
+}
+
+  .invoice-add-date-info{
+    position: relative;
+    max-width: 500px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+
+  .invoice-add-date-info label{
+    font-family: Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555555;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  .invoice-search-dropdown {
+    position: absolute;
+    font-family: Nunito, sans-serif;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .invoice-search-dropdown-item {
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .invoice-search-dropdown-item:last-child {
+    border-bottom: none;
+  }
+  
+  .invoice-search-dropdown-variant {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .invoice-search-dropdown-variant:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .invoice-search-add-button {
+    padding: 4px 8px;
+    background-color: #456efe;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .add-button:hover {
+    background-color: #3957c6;
+  }
+  
+
+
+
+
+
+
+
+
+.add-invoice-entry-form select{
+  box-sizing: border-box;
+  font-family: Nunito, sans-serif;
+  width: 98%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.add-invoice-entry-form input{
+    box-sizing: border-box;
+    font-family: Nunito, sans-serif;
+    width: 98%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.add-invoice-entry-form th{
+    font-family: Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555555;
+    margin-bottom: 5px;
+}
+
+.add-invoice-entry-actions{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+
+.invoice-add-remove-items button {
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    margin: 10px 10px 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.invoice-add-item-button{
+    background-color: rgb(56, 186, 44);
+    color: white;
+  }
+  
+  .invoice-add-item-button:hover{
+    background-color: rgb(43, 145, 33);
+    color: white;
+  }
+  
+  .invoice-remove-item-button{
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    margin: 10px 10px 10px 0;
+    height: fit-content;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgb(186, 44, 44);
+    color: white;
+  }
+  
+  .invoice-remove-item-button:hover{
+    background-color: rgb(145, 33, 33);
+  }
+  
+  .add-invoice-actions{
+    font-family: Nunito, sans-serif;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .add-invoice-submit{
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #456efe;
+    color: white;
+  }
+
+  .add-invoice-submit:hover{
+    background-color: #3d60de;
+  }
+
+  .add-invoice-back{
+    font-family: Nunito, sans-serif;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .add-invoice-back:hover {
+    background-color: #e6e6e6;
+  }
