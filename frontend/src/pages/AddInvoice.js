@@ -18,6 +18,7 @@ export default function AddInvoice() {
     const [filteredItems, setFilteredItems] = useState([]); // To store items filtered by the search
     const [filteredVariants, setFilteredVariants] = useState([]); // To store variants filtered by the search
     const searchContainerRef = useRef(null);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [invoiceEntries, setInvoiceEntries] = useState([
       { category: "", brand: "", item: "", variant: "", quantity: "", buyPrice: "", seller: "" },
       // ... more entries
@@ -86,6 +87,7 @@ useEffect(() => {
       marketPrice: variant.market_price || "",
       buyPrice: variant.average_cost || "",
       sellPrice: variant.sell_price || "",
+      stockAmount: variant.stock_amount || "",
       quantity: 1,
       seller: "",
     };
@@ -112,7 +114,6 @@ useEffect(() => {
         
 
 
- 
 
         
   
@@ -125,6 +126,8 @@ useEffect(() => {
         marketPrice: selectedVariant.market_price,
         buyPrice: selectedVariant.average_cost,
         sellPrice: selectedVariant.sell_price,
+        stockAmount: selectedVariant.stock_amount,
+        quantity: 1,
       };
   
       setInvoiceEntries(updatedEntries);
@@ -313,7 +316,6 @@ useEffect(() => {
       invoiceEntries,
     };
 
-    console.log("Preview: ", previewData)
   
     const previewWindow = window.open(
       "/invoice-preview",
@@ -407,6 +409,7 @@ useEffect(() => {
       <th>Market Price</th>
       <th>Average Cost</th>
       <th>Sell Price</th>
+      <th>Available</th>
       <th>Quantity</th>
       <th>Actions</th>
     </tr>
@@ -469,25 +472,25 @@ useEffect(() => {
         </td>
         <td>
         <select
-          value={entry.variantId || ""}
-          onChange={(e) => handleVariantSelection(index, e.target.value)}
-        >
-          <option value="">Select Variant</option>
-          {(entry.variants || []).map((variant) => {
-            // Dynamically generate variant_attribute
-            const variantAttribute = Object.entries(variant.attributes || {})
-              .filter(([key, value]) => key !== 'variant_id' && value) // Exclude 'variant_id' and falsy values
-              .map(([key, value]) => value)
-              .join(" ");
+  value={entry.variantId || ""}
+  onChange={(e) => handleVariantSelection(index, e.target.value)}
+>
+  <option value="">Select Variant</option>
+  {(entry.variants || []).map((variant) => {
+    // Dynamically generate variant_attribute
+    const variantAttribute = Object.entries(variant.attributes || {})
+      .filter(([key, value]) => key !== 'variant_id' && value) // Exclude 'variant_id' and falsy values
+      .map(([key, value]) => value)
+      .join(" ");
 
+    return (
+      <option key={variant.id} value={variant.id}>
+        {variantAttribute || "No Attribute"}
+      </option>
+    );
+  })}
+</select>
 
-            return (
-              <option key={variant.id} value={variant.id}>
-                {variantAttribute || "No Attribute"}
-              </option>
-            );
-          })}
-        </select>
 
 
 
@@ -505,6 +508,9 @@ useEffect(() => {
             placeholder="Market price"
             onTouchStart={(e) => e.preventDefault()}
             required
+             style={{
+              maxWidth: "150px",
+            }}
           />
         </td>
         <td>
@@ -515,6 +521,9 @@ useEffect(() => {
             placeholder="Cost"
             onTouchStart={(e) => e.preventDefault()}
             required
+            style={{
+              maxWidth: "150px",
+            }}
           />
         </td>
         <td>
@@ -524,6 +533,26 @@ useEffect(() => {
             onChange={(e) => handleChange(index, "sellPrice", e.target.value)}
             placeholder="Sell Price"
             required
+            style={{
+              maxWidth: "150px",
+            }}
+          />
+        </td>
+        <td>
+          <input
+            type="number"
+            value={entry.stockAmount || 0}
+            readOnly
+            style={{
+              color: entry.stockAmount > 10
+                ? "green"
+                : entry.stockAmount > 0
+                ? "orange"
+                : "red",
+              fontWeight: "bold",
+              maxWidth: "80px",
+              backgroundColor: "transparent", // Optional for cleaner design
+            }}
           />
         </td>
         <td>
@@ -533,9 +562,13 @@ useEffect(() => {
             onChange={(e) => handleChange(index, "quantity", e.target.value)}
             placeholder="Enter quantity"
             onTouchStart={(e) => e.preventDefault()}
+            style={{
+              maxWidth: "150px",
+            }}
             required
           />
         </td>
+        
         <td>
           <button
             type="button"
@@ -548,6 +581,118 @@ useEffect(() => {
       </tr>
     ))}
   </tbody>
+    <tfoot>
+      <tr>
+        <td colSpan="11">
+          <div className="invoice-add-table-line"></div>
+        </td>
+      </tr>
+    
+    <tr>
+      <td colSpan="8" style={{ textAlign: "right", fontWeight: "bold" }}>
+        Total Savings for Customer:
+      </td>
+      <td colSpan="2">
+         
+        <input
+          type="number"
+          className="add-invoice-save"
+          value={
+            isNaN(
+              invoiceEntries.reduce(
+                (total, entry) =>
+                  total + entry.quantity * (entry.marketPrice - entry.sellPrice),
+                0
+              )
+            )
+              ? "0.00"
+              : invoiceEntries
+                  .reduce(
+                    (total, entry) =>
+                      total + entry.quantity * (entry.marketPrice - entry.sellPrice),
+                    0
+                  )
+                  .toFixed(2)
+          }
+          readOnly
+          style={{
+            fontWeight: "bold",
+            border: "none",
+            backgroundColor: "transparent",
+            textAlign: "right",
+          }}
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td colSpan="8" style={{ textAlign: "right", fontWeight: "bold" }}>
+        Total Profit:
+      </td>
+      <td colSpan="2">
+        <input
+          type="number"
+          className="add-invoice-profit"
+          value={
+            isNaN(
+              invoiceEntries.reduce(
+                (total, entry) =>
+                  total + entry.quantity * (entry.sellPrice - entry.buyPrice),
+                0
+              )
+            )
+              ? "0.00"
+              : invoiceEntries
+                  .reduce(
+                    (total, entry) =>
+                      total + entry.quantity * (entry.sellPrice - entry.buyPrice),
+                    0
+                  )
+                  .toFixed(2)
+          }
+          readOnly
+          style={{
+            fontWeight: "bold",
+            border: "none",
+            backgroundColor: "transparent",
+            textAlign: "right",
+          }}
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td colSpan="8" style={{ textAlign: "right", fontWeight: "bold" }}>
+        Total Amount:
+      </td>
+      <td colSpan="2">
+        <input
+          type="number"
+          className="add-invoice-total"
+          value={
+            isNaN(
+              invoiceEntries.reduce(
+                (total, entry) => total + entry.quantity * entry.sellPrice,
+                0
+              )
+            )
+              ? "0.00"
+              : invoiceEntries
+                  .reduce((total, entry) => total + entry.quantity * entry.sellPrice, 0)
+                  .toFixed(2)
+          }
+          readOnly
+          style={{
+            fontWeight: "bold",
+            border: "none",
+            backgroundColor: "transparent",
+            textAlign: "right",
+          }}
+        />
+      </td>
+    </tr>
+  </tfoot>
+
 </table>
 
         <div className="invoice-add-remove-items">

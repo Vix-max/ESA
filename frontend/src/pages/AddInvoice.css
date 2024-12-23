@@ -323,3 +323,23 @@
   .add-invoice-back:hover {
     background-color: #e6e6e6;
   }
+
+  .invoice-add-table-line{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #c0bfbf;
+    height: 2px;
+    width: 100%;
+  }
+
+  .add-invoice-save{
+    padding: 5px !important;
+  }
+
+  .add-invoice-profit{
+    padding: 5px !important;
+  }
+
+  .add-invoice-total{
+    padding: 5px !important;
+  }
