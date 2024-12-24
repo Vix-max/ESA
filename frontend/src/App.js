@@ -6,6 +6,7 @@ import AdminLogin from './pages/AdminLogin';
 import StockBillEntry from './pages/StockBillEntry';
 import AdminDashboard from './pages/AdminDashboard';
 import AddInvoice from './pages/AddInvoice';
+import UpdateInvoice from './pages/UpdateInvoice';
 import InvoicePreview from './pages/InvoicePreview';
 import Dashboard from './components/Dashboard'; 
 import Items from './components/Items'; 
@@ -38,6 +39,7 @@ function App() {
           </Route>
 
           <Route path="/addinvoice" element={<AddInvoice />} />
+          <Route path="/updateinvoice/:id" element={<UpdateInvoice />} />
           <Route path="/invoice-preview" element={<InvoicePreview />} />
           
 

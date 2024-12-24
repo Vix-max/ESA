@@ -176,6 +176,32 @@
   .dropdown:hover .dropdown-content {
     display: block;
   }
+
+
+
+
+
+  .invoice-view-button{
+    padding: 10px 10px;
+    font-family: Nunito;
+    margin: 0 5px;
+    background-color: #456EFE;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  
+  .invoice-view-button:hover{
+    background-color: #3653bc;
+  }
+
+
+
+
   
   .pagination {
     font-family: Nunito;
@@ -206,3 +232,4 @@
     font-size: 16px;
   }
   
+

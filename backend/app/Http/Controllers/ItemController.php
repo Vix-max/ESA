@@ -131,6 +131,43 @@ class ItemController extends Controller
         ]);
     }
 
+    public function getItemById($id)
+{
+    $item = Item::with('variants')->find($id);
+
+    if (!$item) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Item not found!',
+        ], 404);
+    }
+
+    return response()->json([
+        'success' => true,
+        'item' => $item,
+    ]);
+}
+
+public function getVariantById($variantId)
+{
+    $variant = Variant::find($variantId);
+
+    if (!$variant) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Variant not found!',
+        ], 404);
+    }
+
+    return response()->json([
+        'success' => true,
+        'variant' => $variant,
+    ]);
+}
+
+
+
+
     public function getByCategoryAndBrand(Request $request, $category_name, $brand)
 {
     \Log::info("Fetching items for category: $category_name and brand: $brand");

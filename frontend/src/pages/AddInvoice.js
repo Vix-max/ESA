@@ -302,34 +302,80 @@ useEffect(() => {
       setInvoiceEntries(updatedEntries);
   };
 
-  //generate the invoice 
-  const handleGenerateInvoice = () => {
+  const handleGenerateInvoice = async () => {
     if (!customerName || !invoiceDate || invoiceEntries.length === 0) {
-      toast.error("Please fill all the details and add at least one item.");
-      return;
+        toast.error("Please fill all the details and add at least one item.");
+        return;
     }
-  
-    // Pass data to the new tab
-    const previewData = {
+
+    // Calculate total amount for the invoice
+    const totalAmount = invoiceEntries.reduce((total, entry) => {
+        return total + (parseFloat(entry.quantity) * parseFloat(entry.sellPrice));
+    }, 0);
+
+    const invoiceData = {
       customerName,
       invoiceDate,
-      invoiceEntries,
+      invoiceEntries: invoiceEntries.map(entry => ({
+          category: entry.category,
+          brand: entry.brand,
+          item: entry.item.toString(), // Ensure item is a string if necessary
+          variant: entry.variantId.toString(),
+          quantity: parseInt(entry.quantity), // Convert quantity to an integer
+          buyPrice: parseFloat(entry.buyPrice), // Convert buyPrice to a number
+          sellPrice: parseFloat(entry.sellPrice), // Convert sellPrice to a number
+      })),
+      totalAmount,  // Include the total amount in the request
     };
 
-  
-    const previewWindow = window.open(
-      "/invoice-preview",
-      "_blank" // Open in a new tab
-    );
-  
-    // Ensure the new tab has access to the data (if using state or context)
-    if (previewWindow) {
-      previewWindow.previewData = previewData;
-    } else {
-      toast.error("Unable to open the preview. Please check your popup settings.");
+    console.log("Invoice data: ", invoiceData);
+
+    try {
+        const response = await fetch('http://localhost:8000/api/addinvoice', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', // Include cookies automatically
+            body: JSON.stringify(invoiceData),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            toast.success(data.message || "Invoice saved successfully!");
+
+            // Pass data to the new tab for preview
+            const previewData = {
+                customerName,
+                invoiceDate,
+                invoiceEntries,
+                totalAmount,  // Pass totalAmount to preview
+            };
+
+            const previewWindow = window.open(
+                "/invoice-preview",
+                "_blank" // Open in a new tab
+            );
+
+            if (previewWindow) {
+                previewWindow.previewData = previewData; // Share data with the new tab
+            } else {
+                toast.error("Unable to open the preview. Please check your popup settings.");
+            }
+        } else {
+            const errorData = await response.json();
+            console.error("Error:", errorData);
+            toast.error("Failed to save invoice.");
+        }
+    } catch (error) {
+        console.error("Error saving invoice:", error);
+        toast.error("An error occurred while saving the invoice.");
     }
-  };
-  
+};
+
+
+      
+
   
   
     
